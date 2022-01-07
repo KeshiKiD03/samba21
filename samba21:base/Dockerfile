@@ -1,15 +1,12 @@
-# Version: 0.0.1
-# @edt M06 2019-2020
-# samba
-# -------------------------------------
 FROM debian:latest
-LABEL author="@isx25633105 ASIX M06-ASO"
-LABEL description="SAMBA server 2021"
+LABEL version="1.0"
+LABEL author="@edt ASIX-M06"
+LABEL subject="PAM host"
 RUN apt-get update
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt-get install -y procps samba samba-client vim finger passwd nmap
+RUN apt-get -y install procps iproute2 tree nmap vim less finger passwd libpam-pwquality nfs-common mlocate nano libpam-mkhomedir libpam-mount libpam-ldapd nslcd nslcd-utils ldap-utils libnss-ldapd
 RUN mkdir /opt/docker
-COPY * /opt/docker/
-RUN chmod +x /opt/docker/install.sh /opt/docker/startup.sh
+COPY . /opt/docker/
+RUN chmod +x /opt/docker/startup.sh
 WORKDIR /opt/docker
-CMD ["/opt/docker/startup.sh"]
+CMD /opt/docker/startup.sh

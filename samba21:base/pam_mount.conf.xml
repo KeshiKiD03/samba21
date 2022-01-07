@@ -11,19 +11,35 @@
 		from top-to-bottom -->
 
 <debug enable="0" />
+    <!-- Volume definitions -->
+    <!-- muntar ~/mytmp amb un ramdisk de 100M -->
+    <volume
+       user="*"
+       fstype="tmpfs"
+       mountpoint="~/%(GROUP)/%(USER)"
+       options="size=100M" 
+     />
 
-		<!-- Volume definitions -->
-		<volume
-       		  user="*"
-       		  fstype="tmpfs"
-       		  mountpoint="~/mytmp"
-       		  options="size=100M" 
-     		/>
-
-
-
-
-		<!-- pam_mount parameters: General tunables -->
+    <!-- muntar a ~/man el recurs NFS 172.18.0.1:/usr/share/doc -->
+<!--     <volume 
+         user="*"
+	 fstype="nfs" 
+	 server="172.18.0.1" 
+         path="/usr/share/man" 
+         mountpoint="~/man" 
+     />     	    
+ -->
+     <!-- muntar només per  a unix02 ~/unix02/mydoc  NFS 172.18.0.1:/usr/share/doc-->
+<!--
+     <volume 
+         user="unix02"
+         fstype="nfs" 
+         server="172.18.0.1" 
+         path="/usr/share/doc" 
+         mountpoint="~/%(USER)/mydoc" 
+     /> 
+      	     
+-->	     <!-- pam_mount parameters: General tunables -->
 
 <!--
 <luserconf name=".pam_mount.conf.xml" />
