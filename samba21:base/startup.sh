@@ -38,11 +38,13 @@ echo -e "smbunix03\nsmbunix03\n" | smbpasswd -a smbunix03
 useradd pere
 useradd pau
 useradd anna
+useradd marta
+useradd jordi
 
 # UN COP CREATS ELS AFEGIM PQ TINGUIN ACCESSx AL SERVIDOR SAMBA 
-echo -e "pere\npere" | smbpasswd -a -s pere
-echo -e "pau\npau" | smbpasswd -a -s pau
-echo -e "anna\nanna" | smbpasswd -a -s anna
+#echo -e "pere\npere" | smbpasswd -a -s pere
+#echo -e "pau\npau" | smbpasswd -a -s pau
+#echo -e "anna\nanna" | smbpasswd -a -s anna
 
 
 # Afegir els grups
@@ -83,21 +85,7 @@ cp /opt/docker/common-session /etc/pam.d/common-session
 
 # --
 
-llistaUsers="pere marta anna pau pere jordi"
-for user in $llistaUsers
-do
-  echo -e "$user\n$user" | smbpasswd -a $user
-  line=$(getent passwd $user)
-  uid=$(echo $line | cut -d: -f3)
-  gid=$(echo $line | cut -d: -f4)
-  homedir=$(echo $line | cut -d: -f6)
-  echo "$user $uid $gid $homedir"
-  if [ ! -d $homedir ]; then
-    mkdir -p $homedir
-    cp -ra /etc/skel/. $homedir
-    chown -R $uid.$gid $homedir
-  fi
-done
+/opt/docker/ldapusers.sh && echo "Password Success 100"
 
 # Asegurar que funcione
 #getent passwd
