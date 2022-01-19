@@ -61,7 +61,15 @@ ASIX M06-ASO 2021-2022 @edt
 
 3. Verificar que podemos acceder desde el HOST de PAM:LDAP --> su -l pere --> pwd --> ls -l
 
----
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/HECHO.PNG" />
+
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/HECHO_1.PNG" />
+
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/HECHO_2.PNG" />
+
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/HECHO_3.PNG" />
+
+==========
 
 ## Pruebas LISTADO
 
@@ -477,6 +485,7 @@ dins del mateix workgroup MYGROUP
       SMB1 disabled -- no workgroup available
       $ 
       ```      
+      <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/SMBCLIENT-ANON.png" />    
 
       **[LISTAR_MODO_USUARIO_IDENTIFICADO]**
 
@@ -527,6 +536,8 @@ dins del mateix workgroup MYGROUP
 
       ```
 
+      <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/SMBCLIENT%20-%20ACCESO%20-%20PERE.png" />    
+
       **[ACCESO_SESIÓN_DESATENDIDA]**
 
       **[BACKUP]**
@@ -547,6 +558,8 @@ dins del mateix workgroup MYGROUP
 
       ```
 
+      <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/SMBGET%20-%20PERE.png" />    
+
       **[SMBGET_GET_COMO_ANON]**
       
       ```
@@ -557,6 +570,8 @@ dins del mateix workgroup MYGROUP
       $ 
 
       ```
+
+      <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/SMBGET%20-%20ANON.png" />    
 
 
    * **[MOUNT.CIFS]** **SÓLO ROOT PUEDE HACER MOUNT**
@@ -596,6 +611,8 @@ dins del mateix workgroup MYGROUP
       root@pam:/# 
       ```
 
+      <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/MOUNT%20-%20PERE.png" />     
+
       **[MOUNT.CIFS-SMBUNIX01]**
 
       ```
@@ -604,6 +621,8 @@ dins del mateix workgroup MYGROUP
       mount.cifs kernel mount options: ip=172.19.0.4,unc=\\smb.edt.org\doc,user=smbunix01,pass=********
       root@pam:/# 
       ```
+
+      <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/MOUNT-CIFS.png" />      
 
       *Ejemplo de /etc/fstab*
 
@@ -617,6 +636,9 @@ dins del mateix workgroup MYGROUP
       root@pam:/# 
 
       ```
+
+      <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/MOUNT%20-%20T%20CIFS%20DE%20ETC%20FSTAB.png" />      
+
    * **[FIREFOX]**
    
       * smb://mygroup
@@ -626,6 +648,12 @@ dins del mateix workgroup MYGROUP
    * **[NAUTILUS]**
 
       * Other Locations --> Connect to Server --> Introducir los datos de algún usuario SAMBA. 
+    
+     <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/PERE-NAUTILUS-0.png" />    
+
+     <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/PERE-NAUTILUS.png" /> 
+
+     <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/UBUNTU.png" /> 
 
       
    ....
@@ -682,6 +710,11 @@ dins del mateix workgroup MYGROUP
          root@smb:/opt/docker# 
 
          ```
+
+         <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/SMBPASSWD.png" />    
+
+         <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/PDBEDIT.png" />  
+
 
    * SMBCONTROL
 
