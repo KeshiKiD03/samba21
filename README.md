@@ -41,6 +41,10 @@ docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:
 
 ==================================================================================
 
+
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/KESHI-SAMBA-HOST.png" />
+
+
 # SAMBA HELP KESHI
 ==========
 
