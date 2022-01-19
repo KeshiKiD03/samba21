@@ -1007,6 +1007,7 @@ dins del mateix workgroup MYGROUP
 
    * **Shares** definidos por el **ADMINISTRADOR**
 
+#### smb.conf
 ```
 [global]
    workgroup = MYGROUP
@@ -1275,6 +1276,7 @@ preferred master = no/yes
 
 **LISTADO DE OPCIONES DE CONFIGURACIÓN DE SHARES**
 
+#### smb.conf
 ```
 path = /dir1/dir2/share
 comment = share description
@@ -1337,7 +1339,7 @@ valid users = dave
 
 ======================
 
-
+#### smb.conf
 ```
 [accounting]
 25comment = Accounting Department Directory
@@ -1358,6 +1360,7 @@ directory mode = 0770
 # chmod 770 /home/samba/accounting
 ```
 
+#### smb.conf
 ```
 [global]
 invalid users = root bin daemon adm sync shutdown halt mail news uucp operator
@@ -1457,6 +1460,7 @@ pla:1003:
 
 * Con la orden **testparm**, podemos ver o observar que directivas de configuración de los SHARES están definidas.
 
+#### smb.conf
 ```
 [global]
 workgroup = MYGROUP
@@ -1478,6 +1482,7 @@ cups options = raw
 
 Observar que l’accés a disc de l’usuari anònim guest es transforma (id mapping) en l’usuari unix ​ **nobody** ​ .
 
+#### smb.conf
 ```
 [public]
 comment = Share de contingut public
@@ -1491,52 +1496,399 @@ guest ok = yes
 
 * **guest only = yes**
 
-* Permite **ÚNICAMENTE** acceder al recurso via ANÓNIMO.
+* Permite **ÚNICAMENTE** acceder al recurso via **ANÓNIMO**.
 
+* No permite acceso via **USUARIO**.
+
+* En verdad sí nos deja acceder pero, en realidad somos *nobody*.
+
+#### smb.conf
+```
+[public]
+   comment = Share de contingut public
+   path = /var/lib/samba/public
+   browseable = yes
+   writable = yes
+   printable = no
+   guest only = yes
+```
+
+```
+[ecanet@d02 samba:18users]$ smbclient -U lila //samba/public
+Enter SAMBA\lila's password:
+Try "help" to get a list of possible commands.
+smb: \> get README.md
+getting file \README.md of size 1900 as README.md (1855.3 KiloBytes/sec) (average
+1855.5 KiloBytes/sec)
+smb: \> put README.md red3.txt
+putting file README.md as \red3.txt (927.7 kb/s) (average 927.7 kb/s)
+smb: \>
+[root@samba docker]# ll /var/lib/samba/public/
+-rw-r--r--. 1 root root 375 Dec 14 11:27 Dockerfile
+-rw-r--r--. 1 root root 1900 Dec 14 11:27 README.md
+-rwxr--r--. 1 nobody nobody 1900 Dec 14 11:43 red3.txt
+```
+
+*-rwxr--r--. 1 nobody nobody 1900 Dec 14 11:43 red3.txt*
+
+------------------------------------------------------------------------
 
 ##### Ejemplo 3: SÓLO USUARIO GUEST CON IDMAP A UNA CUENTA UNIX
 
-[FALTA]
+* Está deprecated guest account. Pero permet accés a un *usuari guest existent del sistema*.
+
+* *guest ok = yes*
+* *guest account = pla*
+
+
+#### smb.conf
+```
+[public]
+comment = Share de contingut public
+30path = /var/lib/samba/public
+browseable = yes
+writable = yes
+guest ok = yes
+guest account = pla
+
+[ecanet@d02 samba:18users]$ smbclient -N //samba/public
+Anonymous login successful
+Try "help" to get a list of possible commands.
+smb: \> get README.md
+getting file \README.md of size 1900 as README.md (1855.3 KiloBytes/sec) (average
+1855.5 KiloBytes/sec)
+smb: \> put README.md red4.txt
+putting file
+```
+
+------------------------------------------------------------------------
 
 ##### Ejemplo 4: USUARIO IDENTIFICADO
 
-[FALTA]
+* Las ordenes cliente SAMBA, permiten indicar el nombre de **QUIÉN** usuario quiere **REALIZAR** la conexión.
+
+   * $ **smbclient -U [user] //server/recurso**
+
+   * $ **smbclient -U [user%password] //server/recurso** 
+
+```
+[ecanet@d02 samba:18users]$ smbclient​ -U lila​ //samba/public
+Enter SAMBA\lila's password:
+Try "help" to get a list of possible commands.
+
+smb: \> get README.md
+getting file \README.md of size 1900 as README.md (927.7 KiloBytes/sec) (average 927.7
+KiloBytes/sec)
+
+smb: \> put README.md red5.txt
+putting file README.md as \red5.txt (927.7 kb/s) (average 927.7 kb/s)
+
+smb: \>
+[root@samba docker]# ll /var/lib/samba/public/
+-rw-r--r--. 1 root root 375 Dec 14 11:27 Dockerfile
+-rw-r--r--. 1 root root 1900 Dec 14 11:27 README.md
+-rwxr--r--. 1 lila lila 1900 Dec 14 11:49 red5.txt
+```
+
+------------------------------------------------------------------------
 
 ##### Ejemplo 5: VALID USERS
 
-[FALTA]
+* Permite indicar una **LISTA DE USUARIOS VÁLIDOS** para acceder al **RECURSO**.
+
+* Otros usuarios **no** podrán acceder. 
+
+* Tampoco **guest** aunque esté indicado **guest ok**
+
+**valid users = [user1] [user2] [userN]**
+
+#### smb.conf
+```
+[public]
+   comment = Share de contingut public
+   path = /var/lib/samba/public
+   browseable = yes
+   writable = yes
+   guest ok = yes
+   valid users = patipla roc
+```
+
+```
+[ecanet@d02 samba:18users]$ smbclient ​ -N​ //samba/public
+Anonymous login successful
+tree connect failed: NT_STATUS_ACCESS_DENIED
+
+[ecanet@d02 samba:18users]$ smbclient ​ -U lila​ //samba/public
+Enter SAMBA\lila's password:
+tree connect failed: NT_STATUS_ACCESS_DENIED
+
+[ecanet@d02 samba:18users]$ smbclient ​ -U patipla​ //samba/public
+Enter SAMBA\patipla's password:
+Try "help" to get a list of possible commands.
+smb: \>
+
+[root@hostedt tmp]# smbclient ​ -U roc%roc​ //samba/public
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.7.10]
+```
+
+------------------------------------------------------------------------
 
 ##### Ejemplo 6: INVALID USERS
 
-[FALTA]
+* Indica una **LISTA DE USUARIOS PARA DENEGAR** el acceso al **RECURSO**.
+
+* El resto de usuarios válidos **sí** podrán acceder.
+
+* **Guest** dependerá si tiene permitido o no via guest ok.
+
+**invalid users = [user1] [user2] [userN]**
+
+#### smb.conf
+```
+[public]
+   comment = Share de contingut public
+   path = /var/lib/samba/public
+   browseable = yes
+   writable = yes
+   guest ok = yes
+   invalid users = patipla roc
+```
+
+```
+[ecanet@d02 samba:18users]$ smbclient ​ -N​ //samba/public
+Anonymous login successful
+Try "help" to get a list of possible commands.
+
+smb: \>
+[ecanet@d02 samba:18users]$ smbclient ​ -U lila​ //samba/public
+Enter SAMBA\lila's password:
+Try "help" to get a list of possible commands.
+
+smb: \>
+[ecanet@d02 samba:18users]$ smbclient​ - ​ U patipla ​ //samba/public
+Enter SAMBA\patipla's password:
+tree connect failed: NT_STATUS_ACCESS_DENIED
+```
+------------------------------------------------------------------------
 
 ##### Ejemplo 7: ADMIN USERS
 
-[FALTA]
+* Permite definir un conjunto de usuarios **SAMBA** que serán convertidos [id_mapping] al usuario ROOT.
+
+* Es decir que los **usuarios SAMBA** entrarán al **RECURSO** como si fueran **ADMINISTRADORES**.
+
+```
+[root@hostedt tmp]# smbclient ​ -U roc%roc​ //samba/public
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.7.10]
+
+smb: \> get README.md
+getting file \README.md of size 1900 as README.md (927,7 KiloBytes/sec) (average 927,7
+KiloBytes/sec)
+
+smb: \> put README.md file1.pdf
+putting file README.md as \file1.pdf (1855,3 kb/s) (average 1855,5 kb/s)
+
+smb: \>
+[root@samba docker]# ll /var/lib/samba/public/
+-rw-r--r--. 1 root root 1900 Dec 14 15:44 README.md
+-rwxr--r--. 1 ​ root​​ roc 1900 Dec 14 15:52 file1.pdf
+```
+
+------------------------------------------------------------------------
 
 #### Ejemplo de lectura / escritura / mode
 
-[FALTA]
+* Los recursos se pueden configurar sólo de **lectura** o de **lectura/escritura**.
+
+* Se puede indicar una lista explícita de **quién puede leer** y de **quién puede escribir**.
+
+* También permite añadir **máscaras** a los ficheros. Con el **MODE**
+
+------------------------------------------------------------------------
 
 ##### Ejemplo 8: RECURSO SÓLO DE LECTURA
 
-[FALTA]
+* **read only = yes** **[read_only=yes]**
+
+* **writable = no** **[writable=no]**
+
+Sólo de *LECTURA*.
+
+------------------------------------------------------------------------
 
 ##### Ejemplo 9: RECURSO DE LECTURA / ESCRITURA
 
-[FALTA]
+* **read only = no** **[read_only=no]**
+
+* **writable = yes** **[writable=yes]**
+
+Sólo de **WRITABLE** tiene los **2 PERMISOS, lectura y escritura**.
+
+
+------------------------------------------------------------------------
 
 ##### Ejemplo 10: LISTA DE USUARIOS AUTORIZADOS
 
-[FALTA]
+* **read List = user1 user2 usern** **[read_list=user1_user2_userN]**
+
+* **writable = yes** **[writable=yes]**
+
+Lista de usuarios que sólo pueden **LEER**.
+
+   Sirve para **restringir USUARIOS** dónde **SÓLO** puedan **LEER**.
+
+   El resto puede escribir con **writable = yes**.
+   
+   Sólo de **WRITABLE** tiene los **2 PERMISOS, lectura y escritura**.
+
+#### smb.conf
+```
+[public]
+   comment = Share de contingut public
+   path = /var/lib/samba/public
+   writable = yes
+   guest ok = yes
+   read list = pla
+```
+
+```
+[root@hostedt tmp]# smbclient ​ -U roc%roc​ //samba/public
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.7.10]
+
+smb: \> ls
+.        D      0 Fri Dec 14 17:31:06 2018
+..       D      0 Fri Dec 14 16:45:31 2018
+file3.txt       A 1900 Fri Dec 14 17:31:06 2018
+
+10474496 blocks of size 1024. 9892316 blocks available
+
+smb: \> rm file3.txt
+
+smb: \>
+
+[root@hostedt tmp]# smbclient ​ -U lila​ //samba/public
+Enter lila's password:
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.7.10]
+
+
+smb: \> put README.md file1.txt
+putting file README.md as \file1.txt (927,7 kb/s) (average 927,7 kb/s)
+
+smb: \>
+[root@hostedt tmp]# smbclient ​ -U pla​ //samba/public
+Enter pla's password:
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.7.10]
+
+smb: \> ls
+.
+D
+0 Fri Dec 14 17:44:09 2018
+..
+D
+0 Fri Dec 14 16:45:31 2018
+file3.txt
+A
+1900 Fri Dec 14 17:44:09 2018
+10474496 blocks of size 1024. 9892312 blocks available
+
+```
+* Da **ERROR**
+
+```
+
+smb: \> rm file3.txt
+NT_STATUS_MEDIA_WRITE_PROTECTED deleting remote file \file3.txt
+NT_STATUS_MEDIA_WRITE_PROTECTED listing \file3.txt
+
+
+smb: \>
+
+
+smb: \> put README.md file4.txt
+NT_STATUS_ACCESS_DENIED opening remote file \file4.txt
+smb: \>
+```
+
+------------------------------------------------------------------------
 
 ##### Ejemplo 11: LISTA DE USUARIOS AUTORIZADOS PARA ESCRITURA
 
-[FALTA]
+* **write list = user1 user2 usern** **[write_list=user1_user2_userN]**
+
+* **writable = no** **[writable=no]**
+
+Lista de usuarios que sólo pueden **ESCRIBIR**.
+
+   Sirve para **FILTRAR USUARIOS** dónde **SÓLO** puedan **ESCRIBIR**.
+
+   El resto **SÓLO PUEDE LEER** con **writable = no**.
+   
+   Sólo de **WRITABLE / WRITE LIST** tiene los **2 PERMISOS, lectura y escritura**.
+
+
+#### smb.conf
+```
+[public]
+   comment = Share de contingut public
+   path = /var/lib/samba/public
+   writable = no
+   guest ok = yes
+   write list = pla
+```
+
+```
+[root@hostedt tmp]# smbclient​ -U lila%lila​ //samba/public
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.7.10]
+
+smb: \> rm file1.pdf
+NT_STATUS_MEDIA_WRITE_PROTECTED deleting remote file \file1.pdf
+35NT_STATUS_MEDIA_WRITE_PROTECTED listing \file1.pdf
+smb: \>
+
+[root@hostedt tmp]# smbclient​ -U pla​ //samba/public
+Enter pla's password:
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.7.10]
+
+smb: \> rm file1.pdf
+
+smb: \> put README.md file1.pdf
+putting file README.md as \file1.pdf (1855,3 kb/s) (average 1855,5 kb/s)
+
+smb: \>
+```
+
+------------------------------------------------------------------------
 
 ##### Ejemplo 12: MODO DE DIRECTORIO Y FICHERO
 
-[FALTA]
+* **create mode = [mode]** **[create_mode=0660]**
+
+* **directory mode = [mode]** **[directory_mode=0660]**
+
+* Permiten establecer **MÁSCARAS a DIRECTORIOS** y **FICHEROS** en una nueva **CREACIÓN** dentro del **SHARE**
+
+```
+[root@samba docker]# ll /var/lib/samba/public/
+-rwxr--r--. 1 pla
+pla
+1900 Dec 14 16:53 file1.pdf
+-rwxr--r--. 1 lila lila 1900 Dec 14 16:42 file1.txt
+-rwxr--r--. 1 nobody nobody 1900 Dec 14 16:28 file2.txt
+-rwxr--r--. 1 nobody nobody 1900 Dec 14 16:44 file3.txt
+```
+
+#### smb.conf
+```
+[public]
+   comment = Share de contingut public
+   path = /var/lib/samba/public
+   writable = yes
+   guest ok = yes
+   create mode = 0660
+   directory mode = 0770
+```
+
+------------------------------------------------------------------------
 
 ### Security
 
