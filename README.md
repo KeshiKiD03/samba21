@@ -734,81 +734,813 @@ dins del mateix workgroup MYGROUP
 
 #### SMBCLIENT
 
+* **[SMBCLIENT]**. Es como un cliente FTP para acceder a los **SHARES SMB/CIFS** del **SERVIDOR**. ftp-like client to access SMB/CIFS resources on servers. Is a client that can 'talk' to an SMB/CIFS server.
+
+      * *A service name takes the form //server/service where server is the NetBIOS name of the SMB/CIFS server offering the desired service and service is the name of the service offered*.
+
+      **[LISTAR_MODO_USUARIO_LDAP_PERE]**
+
+      * *smbclient -U pere -L ip_samba* --> Obtenemos un listado de **SHARES de SAMBA** con el usuario **LDAP PERE**
+
+      ```
+            $ smbclient -L smb.edt.org
+      Enter WORKGROUP\pere's password: 
+
+         Sharename       Type      Comment
+         ---------       ----      -------
+         print$          Disk      Printer Drivers
+         public          Disk      Public resource
+         doc             Disk      Documentation
+         man             Disk      Man pages
+         IPC$            IPC       IPC Service (Samba 4.13.13-Debian)
+         pere            Disk      Home Directories
+      SMB1 disabled -- no workgroup available
+      $ 
+      ```
+
+      **[LISTAR_MODO_ANONYMOUS]**
+
+      * *smbclient -N -L smb.edt.org* --> Obtenemos un listado de **SHARES de SAMBA** de forma *anónima*
+
+      ```
+      $ smbclient -N -L smb.edt.org
+      Anonymous login successful
+
+         Sharename       Type      Comment
+         ---------       ----      -------
+         print$          Disk      Printer Drivers
+         public          Disk      Public resource
+         doc             Disk      Documentation
+         man             Disk      Man pages
+         IPC$            IPC       IPC Service (Samba 4.13.13-Debian)
+      SMB1 disabled -- no workgroup available
+      $ 
+      ```      
+
+      **[LISTAR_MODO_USUARIO_IDENTIFICADO]**
+
+      * *$ smbclient -U smbunix01 -L smb.edt.org* --> Obtenemos un listado de **SHARES de SAMBA** con el usuario *smbunix01*
+
+      ```
+      $ smbclient -U smbunix01 -L smb.edt.org
+      Enter WORKGROUP\smbunix01's password: 
+
+      	Sharename       Type      Comment
+      	---------       ----      -------
+      	print$          Disk      Printer Drivers
+      	public          Disk      Public resource
+      	doc             Disk      Documentation
+      	man             Disk      Man pages
+      	IPC$            IPC       IPC Service (Samba 4.13.13-Debian)
+      	smbunix01       Disk      Home Directories
+      SMB1 disabled -- no workgroup available
+      $ 
+
+      ```
+
+      **[ACCESO_SESIÓN_INTERACTIVA_ANONYMOUS]** 
+      
+      *  *$ smbclient -N //smb.edt.org/doc* --> *Accedemos* a un recurso *DOC* de forma *anónima*
+
+      ```
+      $ smbclient -N //smb.edt.org/doc
+      Anonymous login successful
+      Try "help" to get a list of possible commands.
+      smb: \> pwd
+      Current directory is \\smb.edt.org\doc\
+      smb: \> 
+
+      ```
+
+      **[ACCESO_SESIÓN_INTERACTIVA_PERE]**
+      
+      * *$ smbclient -U pere //smb.edt.org/doc* --> *Accedemos* a un recurso *DOC* con el **USUARIO LDAP PERE**
+
+      ```
+      $ smbclient -U pere //smb.edt.org/doc             
+      Enter WORKGROUP\pere's password: 
+      Try "help" to get a list of possible commands.
+      smb: \> pwd
+      Current directory is \\smb.edt.org\doc\
+      smb: \> 
+
+      ```
+
+      **[ACCESO_SESIÓN_DESATENDIDA]**
+
+      **[BACKUP]**
+
+-------------------------------------------------------------------------
+
 #### SMBTREE
+
+   * **[SMBTREE]**. A text based smb network browser. Obtenemos información de SAMBA en forma de **tree**
+
+      * smbtree. 
+
+      ```
+      Enter GUEST's password:
+      MYGROUP
+      \\2EA1AC403693
+      Samba Server Version 4.2.3
+      \\2EA1AC403693\IPC$
+      IPC Service (Samba Server Version 4.2.3)
+      \\2EA1AC403693\public
+      Share de contingut public
+      \\2EA1AC403693\manpages
+      Documentacio man del container
+      \\2EA1AC403693\documentation
+      Documentaciódoc del container
+      ```
+
+      * smbtree -D --> Obtiene el **WORKGROUP**.
+     
+      * smbtree -S --> Obtiene la **versión** de SAMBA.
+
+-------------------------------------------------------------------------
 
 #### SMBGET
 
+   * **[SMBGET]**. Es como WGET, permite *descargarse ficheros* de servidores *SAMBA*.
+
+      * *smbget smb://smb.edt.org/public/uname.txt*
+      
+      **[SMBGET_GET_COMO_PERE]**
+      
+      ```
+      $ smbget smb://smb.edt.org/public/uname.txt
+      Password for [pere] connecting to //public/smb.edt.org: 
+      Using workgroup WORKGROUP, user pere
+      smb://smb.edt.org/public/uname.txt                                              
+      Downloaded 104b in 1 seconds
+      $ 
+
+      ```
+
+      **[SMBGET_GET_COMO_ANON]**
+      
+      ```
+      $ smbget -a smb://smb.edt.org/public/uname.txt
+      Using workgroup WORKGROUP, guest user
+      smb://smb.edt.org/public/uname.txt                                              
+      Downloaded 104b in 0 seconds
+      $ 
+
+      ```
+
+-------------------------------------------------------------------------
+
 #### MOUNT.CIFS
+
+   * **[MOUNT.CIFS]** **SÓLO ROOT PUEDE HACER MOUNT**
+
+      * *# mount -t cifs -o guest //smb.edt.org/doc /mnt* -> Nos permite montar unidades **SHARE** con el protocolo **CIFS** a nuestro Host con **MOUNTPOINT**.
+
+      * *# mount -t cifs*
+
+      * *# umount /mnt* --> Desmonta **MOUNTPOINT** donde tenemos el **SHARE de SAMBA**.
+
+      *Ejemplo*
+
+      **[MOUNT.CIFS-GUEST]**
+
+      ```
+      root@pam:/# mount -t cifs -o guest //smb.edt.org/doc /mnt
+      root@pam:/# tree /mnt
+      /mnt
+      |-- adduser
+      |   |-- TODO
+      |   |-- changelog.gz
+      |   |-- copyright
+      |   `-- examples
+      ```
+
+      **[MOUNT.CIFS-PERE]**
+
+      ```
+      root@pam:/# mount -v -t cifs -o user=pere,password=pere //smb.edt.org/doc /mnt
+      mount.cifs kernel mount options: ip=172.19.0.4,unc=\\smb.edt.org\doc,user=pere,pass=********
+      root@pam:/# tree /mnt | tail -5
+         |-- changelog.Debian.gz
+         |-- changelog.gz
+         `-- copyright
+
+      346 directories, 1418 files
+      root@pam:/# 
+      ```
+
+      **[MOUNT.CIFS-SMBUNIX01]**
+
+      ```
+      root@pam:/# mount -v -t cifs -o user=smbunix01 //smb.edt.org/doc /mnt
+      🔐 Password for smbunix01@//smb.edt.org/doc:  *********               
+      mount.cifs kernel mount options: ip=172.19.0.4,unc=\\smb.edt.org\doc,user=smbunix01,pass=********
+      root@pam:/# 
+      ```
+
+      *Ejemplo de /etc/fstab*
+
+      1. *# vim /etc/fstab* --> //smb.edt.org/doc /mnt	cifs	defaults,guest,noauto	0	0
+
+      2. mount -t cifs
+
+      ```
+      root@pam:/# mount -t cifs
+      //smb.edt.org/doc on /mnt type cifs (rw,relatime,vers=3.1.1,sec=none,cache=strict,uid=0,noforceuid,gid=0,noforcegid,addr=172.19.0.4,file_mode=0755,dir_mode=0755,soft,nounix,serverino,mapposix,rsize=4194304,wsize=4194304,bsize=1048576,echo_interval=60,actimeo=1)
+      root@pam:/# 
+
+      ```
+-------------------------------------------------------------------------
 
 #### FIREFOX
 
+
+   * **[FIREFOX]**
+   
+      * smb://mygroup
+
+      * smb://smb.edt.org
+
+   * **[NAUTILUS]**
+
+      * Other Locations --> Connect to Server --> Introducir los datos de algún usuario SAMBA. 
+
+-------------------------------------------------------------------------
+
 #### NAUTILUS
+
+
+   * **[FIREFOX]**
+   
+      * smb://mygroup
+
+      * smb://smb.edt.org
+
+   * **[NAUTILUS]**
+
+      * Other Locations --> Connect to Server --> Introducir los datos de algún usuario SAMBA. 
+
+
+-------------------------------------------------------------------------
 
 ### Unix Server con SAMBA
 
 #### Ejemplo de configuración Server Shares
 
+* Actúa como un simple **HOST** que ofrece **SHARES** a la **RED**.
+
+* Ofrece **RECURSOS DE DISCO**:
+
+   * Documentation /usr/share/doc --> Sólo de **LECTURA**.
+
+   * Manpages /usr/share/man --> Sólo de **LECTURA**
+
+   * Public /var/lib/samba/public --> De **READ/WRITE** para todos
+
+   * Privat /var/lib/samba/privat --> Que no se muestra en los listados. Es **BROWSEABLE = NO**.
+
+* Observar el fichero, se divide en *3 bloques*:
+
+   * **Global**: Descripción general del *Servidor SAMBA*
+
+   * **Shares**: Para *homes* y *printer* (estándar)
+
+   * **Shares** definidos por el **ADMINISTRADOR**
+
+```
+[global]
+   workgroup = MYGROUP
+   server string = Samba Server Version %v
+   log file = /var/log/samba/log.%m
+   max log size = 50
+   security = user
+   passdb backend = tdbsam
+   load printers = yes
+   cups options = raw
+   
+[homes]
+   comment = Home Directories
+   browseable = no
+   writable = yes
+;  valid users = %S
+;  valid users = MYDOMAIN\%S
+
+[printers]
+   comment = All Printers
+   path = /var/spool/samba
+   browseable = no
+   guest ok = no
+   writable = no
+   printable = yes
+
+[documentation]
+   comment = Documentació doc del container
+   path = /usr/share/doc
+   public = yes
+   browseable = yes
+   writable = no
+   printable = no
+   14guest ok = yes
+
+[manpages]
+   comment = Documentació man del container
+   path = /usr/share/man
+   public = yes
+   browseable = yes
+   writable = no
+   printable = no
+   guest ok = yes
+
+[public]
+   comment = Share de contingut public
+   path = /var/lib/samba/public
+   public = yes
+   browseable = yes
+   writable = yes
+   printable = no
+   guest ok = yes
+
+[privat]
+   comment = Share d'accés privat
+   path = /var/lib/samba/privat
+   public = no
+   browseable = no
+   writable = yes
+   printable = no
+   guest ok = yes
+```
+
+
 #### Instalación
+
+1. Instalar los paquetes relacionados con SAMBA: *samba* *samba-client*
+
+2. Encender los servicios **smbdc** y **nmbd**.
+
+3. Modificar el fichero **smb.conf** a gusto del *USUARIO* con los parámetros adecuados.
+
+4. Establecer **SHARES de DISCO** adecuados con sus **PARÁMETROS DE SEGURIDAD**
+
+4. Crear **USUARIOS UNIX** y posteriormente **USUARIOS SAMBA existentes**.
+
+5. Verificar integridad de los **USUARIOS** SAMBA con **PDBEDIT -L**.
+
+4. Utilizamos *testparm* para verificar la configuración de */etc/samba/smb.conf*.
+
+**Si tienes BIND9**
+
+* Configurar BIND9 en todos los hosts y añadir el WORKGROUP para la resolución.
+
+**Si tienes DOCKER**
+
+* La resolución es *automática*.
+
+* Hay que encender 3 DOCKERS: Ldap:group + PAM:ldap + SAMBA:base.
+
+* Configurar el *pam_mount.conf.xml* para que monte automáticamente del tipo *CIFS*
+
+5. Probar órdenes cliente como SMBPASSWD, SMBGET, SMBCLIENT, MOUNT.CIFS...
 
 ------------------------------------------------------------------------
 
 ### Name Resolution
 
+* WINS --> Protocol de Nombres de Windows. Tipo DNS. Actua como Netbeui. Resuelve nombres Netbeui a IP.
+
+```
+name resolve order = ...
+wins server = yes/adreçaIP
+wins support = yes/no
+```
+
+* **WINS Server** --> **YES** --> Realiza la función de Server WINS.
+
+* **WINS Support** --> **YES/IP** --> Hace que los hosts de RED sean clientes de WINS.
+
+* Imita el fichero */etc/hosts* de Linux --> Windows usa Netbeui en */etc/samba/lmhosts*.
+
+------------------------------------------------------------------------
+
 #### Resolución Hosts Clientes de Windows
 
 ##### Utilización de Imhosts
 
+
+* lmhosts --> Resuelve nombres de Netbeui.
+
+* No tenemos **clientes Windows**, pero esta utilidad nos resuelve **CLIENTES WINDOWS**.
+
+*Ejemplo*
+
+```
+root@939c09590bdc /]# nmblookup -S 3145DBF85061 ​ (és el Master Browser)
+172.17.0.8 3145DBF85061<00>
+Looking up status of 172.17.0.8
+3145DBF85061
+<00> -
+B <ACTIVE>
+3145DBF85061
+<03> -
+B <ACTIVE>
+3145DBF85061
+<20> -
+B <ACTIVE>
+..__MSBROWSE__. <01> - <GROUP> B <ACTIVE>
+MYGROUP
+<00> - <GROUP> B <ACTIVE>
+MYGROUP
+<1d> -
+B <ACTIVE>
+MYGROUP
+<1e> - <GROUP> B <ACTIVE>
+MAC Address = 00-00-00-00-00-00
+```
+
+------------------------------------------------------------------------
+
 ##### Utilización Wins
 
-#### Reslución Hosts Clientes de GNU/Linux 
+```
+# This section details the support for the Windows Internet Name Service (WINS).
+# Note: Samba can be either a WINS server or a WINS client, but not both.
+# ​ wins support​​ = when set to yes, the NMBD component of Samba enables its WINS
+# server.
+#
+# ​ wins server ​ = tells the NMBD component of Samba to be a WINS client.
+# ​ wins proxy​​ = when set to yes, Samba answers name resolution queries on behalf
+# of a non WINS capable client. For this to work, there must be at least one
+# WINS server on the network. The default is no.
+# ​ dns proxy​​ = when set to yes, Samba attempts to resolve NetBIOS names via DNS
+# nslookups.
+```
+
+------------------------------------------------------------------------
+
+
+#### Resolución Hosts Clientes de GNU/Linux 
+
+* Desde /etc/hosts
+
+* Desde BIND9
+
+* Docker es automático.
 
 #### El servicio nmbd
 
+* Windows usa el SERVICIO **/usr/sbin/nmbd** para la resolución de *NOMBRES HOSTS WINDOWS*.
+
+------------------------------------------------------------------------
+
 ### Master Browser
+
+* En una red Windows entre hosts donde no hay un **Controlador de DOMINIO (PDC)**, los equipos compiten para escoger un *local master browser* --> Se llama *ELECCIONES*
+
+* Toda subred, escoge su MASTER BROWSER.
+
+* Están bajo un PDC (Controlador Dominio Principal) --> Domain Master Browser
+
+```
+local master = no/yes
+os level = nº
+preferred master = no/yes
+```
+
+* Directivas:
+
+   * local master: --> 
+   
+      * No --> Significa que nunca será LOCAL MASTER BROWSER. 
+      
+      * Yes --> Dice que sí se postula, pero tiene que ganar las *ELECCIONES*.
+
+   * os level: --> Indica un valor, depende del SO.
+
+   * preferred master: --> *Forza* elecciones.
+
+------------------------------------------------------------------------
 
 #### Primer Caso 
 
+* 2 hosts de SAMBA, no juegan ningún rol de PDC, uno de ellos hace de LOCAL MASTER BROWSER.
+
+[falta_revisar_mañana] [PEGAR_FOTO]
+
+------------------------------------------------------------------------
+
 #### Segundo Caso
+
+* El WorkGroup --> NEWGROUP --> 1 de ellos fuerza modificaciones para que sea master browser.
+
+[falta_revisar_mañana] [PEGAR_FOTO]
+
+------------------------------------------------------------------------
 
 #### Tercer Caso
 
+* 4 containers de Docker como Samba Server (No PDC), se modifica el *os_level* y el *preferred_master* para hacerlo *master browser*
+
+------------------------------------------------------------------------
+
 ### Domain Master Browser
+
+* 2 hay tipos:
+
+   * **Local Master Browsing**: Cada subred, se escoge via *ELECCIONES*.
+
+   * **Domain Master Browsing**: Múltiples subredes diferentes en un Dominio de Windows, gestionado por un *Controlador de Dominio Principal (PDC)*. 
+   Hace de Domain Master Browsing y Local Master Browsing. No se escoge por elección, sino el *ADMIN configura* las opciones.
+
+   ```
+   domain master = yes/no
+   preferred master = yes/no
+   local master = yes/no
+   os level = nº
+   ```
+
+------------------------------------------------------------------------
 
 ## Users / Groups (Share Options) Security
 
 ### Users / Groups
 
+* A los **SHARES** se pueden establecer **REQUISITOS** según el **USUARIO**.
+
+* SAMBA usa una **base de datos** *propia* (*tdbsam*) de USUARIOS.
+
+* Estos usuarios tienen que existir en UNIX Localmente para poderse añadir a SAMBA.
+
+* Las órdenes **SMBPASSWD** y **PDBEDIT** hace la función.
+
+[IMPORTANTE]
+
+**LISTADO DE OPCIONES DE CONFIGURACIÓN DE SHARES**
+
+```
+path = /dir1/dir2/share
+comment = share description
+volume = share name
+browseable = yes/no
+max connections = #
+
+public = yes/no
+guest ok = yes/no
+guest account = unix-useraccount
+guest only = yes/no
+
+valid users = user1 user2 @group1 @group2 …
+invalid users = user1 user2 @group1 @group2 …
+auto services = user1 user2 @group1 @group2 …
+admin users = user1 user2 @group1 @group2 …
+
+writable = yes/no
+read only = yes/no
+write list = user1 user2 @group1 @group2 …
+read list = user1 user2 @group1 @group2 …
+
+create mode = 0660
+directory mode = 0770
+
+```
+
+*EJEMPLO 1*
+
+```
+[dave]
+path = /home/dave
+comment = Dave's home directory
+writable = yes
+valid users = dave
+```
+
+* Se crea un **SHARE** la **HOME** de DAVE.
+
+* Es **WRITABLE**.
+
+* Pero **SÓLO** puede **ACCEDER** DAVE (**VALID USERS**).
+
+=========================
+
+**KESHI**
+
+[compartida]
+	comment = Compartida
+	path = /tmp/compartida
+	browseable = Yes
+	writable = Yes
+	valid users = pere
+
+* Se crea un **SHARE** de /tmp/compartida.
+
+* Es **WRITABLE** y **BROWSEABLE**.
+
+* Pero sólo puede **ACCEDER PERE**.
+
+======================
+
+
+```
+[accounting]
+25comment = Accounting Department Directory
+writable = yes
+valid users = @account
+path = /home/samba/accounting
+create mode = 0660
+directory mode = 0770
+```
+
+* El **directorio** tendrá una *máscara* 770.
+
+* Podrá acceder el grupo @account.
+
+```
+# mkdir /home/samba/accounting
+# chgrp account /home/samba/accounting
+# chmod 770 /home/samba/accounting
+```
+
+```
+[global]
+invalid users = root bin daemon adm sync shutdown halt mail news uucp operator
+auto services = dave peter bob
+
+
+[homes]
+browsable = no
+writable = yes
+
+
+[sales]
+path = /home/sales
+comment = Sedona Real Estate Sales Data
+writable = yes
+valid users = sofie shelby adilia
+admin users = mike
+
+
+[salesbis]
+path = /home/sales
+comment = Sedona Real Estate Sales Data
+read only = yes
+write list = sofie shelby
+```
+
+[IMPORTANTE]
+
+------------------------------------------------------------------------
+
+## SHARE LEVEL ACCESS OPTIONS
+
+* admin users --> Users who can perfom operations as **root**
+
+* valid users --> Users who **can connect** to a **share**
+
+* invalid users --> Users who will be **denied access** to a **share**
+
+* read list --> Users who have **read-only** access to a **writable share**
+
+* write list --> Users who have **read/write** access to a **read-only share**
+
+* max connections --> Max numbers of connections at the same time
+
+* guest only --> If yes, Only guest access.
+
+* guest account --> Unix account --> guest access
+
+------------------------------------------------------------------------
+
 #### SMBPASSWD 
+
+* Para crear **USUARIOS SAMBA**, se basan en usuarios **UNIX LOCAL**, tienen que existir.
+
+*EJEMPLO HOW TO*
+
+El següent exemple mostra com crear quatre usuaris super3!. Tot seguit mostra diferents formes d’accés al recurs documentation:
+
+● connecta amb l’usuari unix utilitzat en el client.
+
+● connecta com a usuari anìnim: guest
+
+● connecta com a usuària lila i demana el password interactivament
+
+● connecta com a usuària lila amb el password indicat en la línia de comandes.
+
+```
+server# smbpasswd -a lila
+server# smbpasswd -a patipla
+server# smbpasswd -a rock
+server# smbpasswd -a pla
+
+client$ smbclient //host01/documentation
+client$ smbclient -N //host01/documentation
+client$ smbclient //host01/documentation -U lila
+client$ smbclient //host01/lila -U lila%smblila
+```
+
+```
+Amb ​ pdbedit ​ podem llistar els usuaris samba:
+[root@samba docker]# pdbedit -L
+patipla:1000:
+roc:1002:
+lila:1001:
+pla:1003:
+```
+
+* Para ver todos los datos de las cuentas.
+
+   [importante]
+
+   * **pdbedit -vL**
+
+   ------------------------------------------------------------------------
 
 #### Ejemplos de validación de Usuarios
 
-##### Ejemplo 1:
+* Con la orden **testparm**, podemos ver o observar que directivas de configuración de los SHARES están definidas.
 
-##### Ejemplo 2:
+```
+[global]
+workgroup = MYGROUP
+server string = Samba Server Version %v
+log file = /var/log/samba/log.%m
+max log size = 50
+security = user
+passdb backend = tdbsam
+load printers = yes
+cups options = raw
+```
 
-##### Ejemplo 3:
+##### Ejemplo 1: USUARIO GUEST ACCEDE A //SAMBA/PUBLIC
 
-##### Ejemplo 4:
+* **guest ok = yes**
 
-##### Ejemplo 5:
+* Permet l’accés al **share de usuaris anònims**, sense identificar. és equivalent a la opció *public = yes*.
 
-##### Ejemplo 6:
 
-##### Ejemplo 7:
+Observar que l’accés a disc de l’usuari anònim guest es transforma (id mapping) en l’usuari unix ​ **nobody** ​ .
+
+```
+[public]
+comment = Share de contingut public
+path = /var/lib/samba/public
+browseable = yes
+writable = yes
+guest ok = yes
+```
+
+##### Ejemplo 2: SÓLO GUEST
+
+* **guest only = yes**
+
+* Permite **ÚNICAMENTE** acceder al recurso via ANÓNIMO.
+
+
+##### Ejemplo 3: SÓLO USUARIO GUEST CON IDMAP A UNA CUENTA UNIX
+
+[FALTA]
+
+##### Ejemplo 4: USUARIO IDENTIFICADO
+
+[FALTA]
+
+##### Ejemplo 5: VALID USERS
+
+[FALTA]
+
+##### Ejemplo 6: INVALID USERS
+
+[FALTA]
+
+##### Ejemplo 7: ADMIN USERS
+
+[FALTA]
 
 #### Ejemplo de lectura / escritura / mode
 
-##### Ejemplo 8:
+[FALTA]
 
-##### Ejemplo 9:
+##### Ejemplo 8: RECURSO SÓLO DE LECTURA
 
-##### Ejemplo 10:
+[FALTA]
 
-##### Ejemplo 11:
+##### Ejemplo 9: RECURSO DE LECTURA / ESCRITURA
 
-##### Ejemplo 12:
+[FALTA]
+
+##### Ejemplo 10: LISTA DE USUARIOS AUTORIZADOS
+
+[FALTA]
+
+##### Ejemplo 11: LISTA DE USUARIOS AUTORIZADOS PARA ESCRITURA
+
+[FALTA]
+
+##### Ejemplo 12: MODO DE DIRECTORIO Y FICHERO
+
+[FALTA]
 
 ### Security
+
+[FALTA]
 
 #### Repaso al modelo de trabajo
 
