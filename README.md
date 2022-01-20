@@ -2171,27 +2171,45 @@ global]
 
 * **ALGUNAS VARIABLES PARA GLOBAL**
 
-[%a] Client's architecture (see Table 6-1)
-[%I] Client's **IP address** (e.g., 172.16.1.2)
-[%m] Client's **NetBIOS name**
-[%M] Client's *DNS name*
-[%u] Current **Unix** username
-[%U] Requested **client username** (not always used by Samba)
-[%H] **Home directory of %u**
-[%g] Primary group of %u
-[%G] Primary group of %U
-[%S] **Current share's name**
-[%P] Current share's root directory
-[%p] Automounter's path to the share's root directory, if different from [%P]
-[%d] Current server process ID
-[%h] Samba **server's DNS hostname**
-[%L] Samba **server's NetBIOS name**
-[%N] Home directory server, from the automount map
-[%v] Samba **version**
-[%R] The SMB protocol level that was negotiated
-[%T] The current date and time
-[%$var] The value of environment variable var
+[%a] Client's architecture (see Table 6-1)<br/>
 
+[%I] Client's **IP address** (e.g., 172.16.1.2)<br/>
+
+[%m] Client's **NetBIOS name**<br/>
+
+[%M] Client's *DNS name*<br/>
+
+[%u] Current **Unix** username<br/>
+
+[%U] Requested **client username** (not always used by Samba)<br/>
+
+[%H] **Home directory of %u**<br/>
+
+[%g] Primary group of %u<br/>
+
+[%G] Primary group of %U<br/>
+
+[%S] **Current share's name**<br/>
+
+[%P] Current share's root directory<br/>
+
+[%p] Automounter's path to the share's root directory, if different from [%P]<br/>
+
+[%d] Current server process ID<br/>
+
+[%h] Samba **server's DNS hostname**<br/>
+
+[%L] Samba **server's NetBIOS name**<br/>
+
+[%N] Home directory server, from the automount map<br/>
+
+[%v] Samba **version**<br/>
+
+[%R] The SMB protocol level that was negotiated<br/>
+
+[%T] The current date and time<br/>
+
+[%$var] The value of environment variable var<br/>
 
 
 ------------------------------------------------------------------------
