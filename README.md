@@ -68,16 +68,17 @@ docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:
       apropiat.
 
       ○ **Usuaris samba** 
-         
-         * Cal **crear els comptes d'usuari samba** (recolsats en l'existència del mateix usuari **unix**). 
-         
-         * Per a **cada usuari samba** els pot crear amb **smbpasswd** el compte d'usuasi samba assignant-li el password de samba. 
-         
-         * Convé que sigui el mateix que el de *ldap* per tal de que en fer login amb un sol password es validi l'usuari (auth de *pam_ldap.so*) i es munti el home via samba (*pam_mount.so*). 
-         
-         * Samba pot desar els seus usuaris en una base de dades local anomenada **tdbsam** o els pot desar en un servidor ldap usant com a backend **ldapsam**. 
-         
-         * El mecanisme més simple és usar **tdbsam** i **smbpasswd** i **pdbedit** com a utilitats.
+      
+  
+  	    * Cal **crear els comptes d'usuari samba** (recolsats en l'existència del mateix usuari **unix**). 
+  	    
+  	    * Per a **cada usuari samba** els pot crear amb **smbpasswd** el compte d'usuasi samba assignant-li el password de samba. 
+  	    
+  	    * Convé que sigui el mateix que el de **ldap** per tal de que en fer login amb un sol password es validi l'usuari (auth de **pam_ldap.so**) i es munti el home via samba (**pam_mount.so**). 
+  	    
+  	    * Samba pot desar els seus usuaris en una base de dades local anomenada **tdbsam** o els pot desar en un servidor ldap usant com a backend **ldapsam**. 
+  	    
+  	    * El mecanisme més simple és usar **tdbsam** i **smbpasswd** i **pdbedit** com a utilitats.
 
 
    * **pam21:ldap** Un hostpam configurat per accedir als usuaris **locals** i **ldap** i que usant **pam_mount.so** munta dins del home dels usuaris un home de xarxa via samba. 
