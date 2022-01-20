@@ -1,4 +1,5 @@
 # SAMBA
+# KESHIKID03 / AARON ANDAL
 ## @edt ASIX M06 2021-2022
 
 Podeu trobar les imatges docker al Dockehub de [edtasixm06](https://hub.docker.com/u/edtasixm06/)
@@ -69,7 +70,7 @@ ASIX M06-ASO 2021-2022 @edt
 
 <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/HECHO_3.PNG" />
 
-==========
+==========================================================================================
 
 ## Pruebas LISTADO
 
@@ -95,12 +96,15 @@ root@smb:/opt/docker#
 5. Listado ANONYMOUS (Desde PAM): smbclient -N -L [ip_samba] --> Podemos volver a hacer un smbclient con anonymous --> -n
 
 ```
-
+smbclient -N -L
 ```
 
 6. Listado con USUARIO LDAP: smbclient -U pere -L [ip_samba]
 
 ```
+smbclient -U pere%pere -L
+
+% --> Permite añadir la contraseña por input
 
 ```
 
@@ -111,6 +115,8 @@ root@smb:/opt/docker#
 7. Accedemos al recurso DOC con el usuario PERE --> smbclient -U pere //[ip_samba]/doc
 
 ```
+
+smbclient -U pere%pere //smb.edt.org/doc
 
 ```
 
@@ -129,12 +135,15 @@ smb: \>
 
 * smbget smb://<IP>_<host>/<recurs>/<fitxer>
 
+* MÁS ADELANTE LO VEMOS CON DETALLE.
+
 ---
 
 ### MOUNT
 
 * mount -t cifs -o <user> //<IP>/<path_origen> <destí>
 
+* MÁS ADELANTE LO VEMOS CON DETALLE.
 
 ---
 
@@ -142,7 +151,10 @@ smb: \>
 
 * smb://<IP>
 
+* MÁS ADELANTE LO VEMOS CON DETALLE.
 
+
+==========================================================================================
 
 ### Help descriptiu de l'accés al servidor samba
 
@@ -1892,50 +1904,1121 @@ pla
 
 ### Security
 
-[FALTA]
+Niveles de seguridad y autenticación.
+
+   * **SHARE-LEVEL SECURITY**
+
+   * **USER-LEVEL SECURITY**
+
+   * **SERVER-LEVEL SECURITY**
+
+   * **DOMAIN-LEVEL SECURITY**
+
+```
+[global]
+security = share
+
+[data]
+username = andy, peter, terry
+
+```
+
+```
+[global]
+security = user
+[accounting1]
+writable = yes
+valid users = bob, joe, sandy
+```
+
+```
+[global]
+security = server
+password server = mixtec toltec
+```
+
+* Los ejercicios planteados son con equipos **standalone** --> Tipo **USER**.
+
+* La *base de datos* de usuarios y seguridad es el **tbdsam**.
+
+```
+[global]
+   workgroup = MYGROUP
+   server string = Samba Server Version %v
+   log file = /var/log/samba/log.%m
+   max log size = 50
+   security = user
+   passdb backend = tdbsam
+   load printers = yes
+```
+
+------------------------------------------------------------------------
 
 #### Repaso al modelo de trabajo
 
+* **[CLIENTE_UNIX]**
+
+   * El usuario PERE --> Se conecta a un share y descarga.
+
+      Todo lo que se descargue estará a su **nombre**.
+
+* **[USUARIO_SAMBA]**
+
+   * Con un smbclient -U [user] //server/recurso ...
+
+      * Estamos indicando que se conectará al servidor como [user]
+
+      * Tiene que ser **USUARIO SAMBA VÁLIDO**
+
+      * Tienen que tener **PASSWORD SAMBA** asignado --> Usa **tbdsam**.
+
+* **[USUARIO_UNIX_DESTINO]**
+
+   * Cuando *pere* hace acciones en el SISTEMA DE FICHEROS ...
+
+      * Lo hace en nombre de *patipla* .
+
+         * Se tienen que traducir para que se pueda hacer **"mapping"** a un usuario **UNIX VÁLIDO**
+
+* **[EJEMPLOS DE SEGURIDAD]**
+
+* El *acceso remoto* al servicio se aplican *reglas del servicio*.
+
+* Una vez superadas los *permisos* de *SAMBA*, 
+
+   * Hace falta pasar los *permisos* del *sistema de ficheros* DE UNIX.
+
+ES DECIR POR MUCHO QUE SAMBA NOS DEJE, SI EL DIRECTORIO NO PERMITE ESCRITURA. LA USUARIA PATIPLA NO PODRÁ BORRAR NI SUBIR NADA.
+
+PREVALECEN LOS PERMISOS DE UNIX.
+
+------------------------------------------------------------------------
+
 ### Directorio Home de los usuarios
 
-#### ¡Una mala forma de trabajar!
+* Un usuario puede acceder a su home vía recurso/share de SAMBA.
 
-#### Exportar los Homes de los usuarios (una buena forma de trabajar)
+*EJEMPLO DE SHARE DE HOME*
+
+```
+[myhome]
+   comment = Share amb els homes dels usuaris
+   path = /home/%U
+   writable = yes
+   guest ok = no
+   browseable = no
+```
+
+## EJEMPLO ERRONEO / ¡Una mala forma de trabajar!
+
+```
+[root@hostedt tmp]# smbclient -U roc%roc //samba/myhome
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.7.10]
+smb: \> ls
+. D 0 Fri Dec 14 16:44:38 2018
+.. D 0 Fri Dec 14 16:44:41 2018
+.bash_logout H 18 Mon Jun 18 10:37:45 2018
+.bash_profile H 193 Mon Jun 18 10:37:45 2018
+.bashrc H 231 Mon Jun 18 10:37:45 2018
+10474496 blocks of size 1024. 9892316 blocks available
+smb: \> pwd
+Current directory is \\samba\myhome\
+smb: \> mkdir soc-en-roc
+
+```
+
+```
+[root@hostedt ~]# smbclient -U lila%lila //samba/myhome
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.7.10]
+smb: \> ls
+. D 0 Fri Dec 14 16:44:37 2018
+.. D 0 Fri Dec 14 16:44:41 2018
+.bash_logout H 18 Mon Jun 18 10:37:45 2018
+.bash_profile H 193 Mon Jun 18 10:37:45 2018
+.bashrc H 231 Mon Jun 18 10:37:45 2018
+10474496 blocks of size 1024. 9892332 blocks available
+smb: \>
+```
+
+* Observamos el ejemplo anterior que *"roc"* se conecta al recurso *"myhome"*.
+
+   * En otra sesión, la usuaria *"lila"* cuando accede al mismo recurso, en realidad no entra al de *"roc"* sino a su home *"lila"*
+
+
+## EJEMPLO CORRECTO / Exportar los Homes de los usuarios (una buena forma de trabajar)
+
+* **SAMBA** **AUTOMATIZA** la exportación de los **DIRECTORIOS HOME** de los usuarios en un **SHARE** que viene por **DEFECTO**.
+
+   * Este recurso se llama **[homes]**
+
+      * Por **DEFECTO** está activado.
+
+      * No está **BROWSEABLE**.
+
+      * Es de **lectura/escritura** = **WRITABLE**
+
+```
+[homes]
+      comment = Home Directories
+      browseable = no
+      writable = yes
+      ; valid users = %S
+      ; valid users = MYDOMAIN\%S
+```
+
+* El acceso a la **home** de los usuarios SAMBA es simple.
+
+   * **SE ACCEDE VÍA NOMBRE DE USUARIO EN LUGAR DEL SHARE**
+
+      * SMBCLIENT -U roc%roc [//samba/roc]
+
+```
+[root@hostedt ~]# smbclient -U patipla%patipla //samba/patipla
+Domain=[MYGROUP] OS=[Windows 6.1] Server=[Samba 4.7.10]
+smb: \> pwd
+Current directory is \\samba\patipla\
+smb: \> ls
+. D 0 Fri Dec 14 16:44:36 2018
+.. D 0 Fri Dec 14 16:44:41 2018
+.bash_logout H 18 Mon Jun 18 10:37:45 2018
+.bash_profile H 193 Mon Jun 18 10:37:45 2018
+.bashrc H 231 Mon Jun 18 10:37:45 2018
+10474496 blocks of size 1024. 9892352 blocks available
+smb: \>
+```
+
+
+------------------------------------------------------------------------
 
 ## Global Options
 
+------------------------------------------------------------------------
+
 ### General
+
+```
+global]
+...
+[homes]
+...
+[printers]
+...
+[test]
+...
+
+```
+
+* Se pueden definir opciones generales por *DEFECTO*
+```
+[global]
+      netbios name = toltec
+      server string = Samba %v on %L
+      workgroup = METRAN
+      encrypt passwords = yes
+      wins support = yes
+      read only = no
+```
+
+* **ALGUNAS VARIABLES PARA GLOBAL**
+
+[%a] Client's architecture (see Table 6-1)
+[%I] Client's **IP address** (e.g., 172.16.1.2)
+[%m] Client's **NetBIOS name**
+[%M] Client's *DNS name*
+[%u] Current **Unix** username
+[%U] Requested **client username** (not always used by Samba)
+[%H] **Home directory of %u**
+[%g] Primary group of %u
+[%G] Primary group of %U
+[%S] **Current share's name**
+[%P] Current share's root directory
+[%p] Automounter's path to the share's root directory, if different from [%P]
+[%d] Current server process ID
+[%h] Samba **server's DNS hostname**
+[%L] Samba **server's NetBIOS name**
+[%N] Home directory server, from the automount map
+[%v] Samba **version**
+[%R] The SMB protocol level that was negotiated
+[%T] The current date and time
+[%$var] The value of environment variable var
+
+
+
+------------------------------------------------------------------------
 
 ### Hosts Allow/Deny
 
+1. SI NO HAY **allow or deny options** en *smb.conf*.
+
+   * **SAMBA** **permite conexiones** de cualquier sistema.
+
+2. SI HAY hosts para **PERMITIR O DENY** en **[global]** es a nivel **GLOBAL**. Incluso si se permiten en los **SHARES**
+
+3. Si hay **"[HOST_ALLOW]"** en un **SHARE**, sÓlo los **HOSTS LISTADOS** estarán **[PERMITIDOS]** entrar al **SHARE**.
+
+4. 3. Si hay **"[HOST_DENY]"** en un **SHARE**, solo los **HOSTS LISTADOS** estarán **[DENEGADOS]** entrar al **SHARE**, OTROS HOSTS **PODRÁN** ENTRAR.
+
+5. Si están LAS **[2_OPCIONES]**, **ALLOW** tiene **PRECEDENCIA**.
+
+*EJEMPLO DE PRECEDENCIA*
+
+* **host allow** = 111.222.
+
+* **host deny** = 111.222.333.
+
+* La subnet 111.222.*.* podrá permitir acceder a SAMBA SHARES.
+
+* La lista del **DENY**, no valdrá porque hay un **ALLOW** permitiendolo
+
+* Para ello se emplea el **EXCEPT**.
+
+   * **host allow = 111.222. EXCEPT 111.222.333.**
+
+
+```
+[global]
+   # Networking configuration options
+   hosts allow = 192.168.220. 134.213.233.
+   hosts deny = 192.168.220.102
+   interfaces = 192.168.220.100/255.255.255.0 \
+   134.213.233.110/255.255.255.0
+   bind interfaces only = yes
+
+```
+
+1. Si no hay **ALLOW o DENY** --> Samba permitirá.
+
+2. Si hay **ALLOW O DENY** en [global] --> Esto aplica a todos los **SHARES**.
+
+3. Si sólo hay **HOSTS ALLOW** en **SHARE**, sólo los **HOSTS** de la **LISTA** podrán **ENTRAR**.
+
+4. 3. Si sólo hay **HOSTS DENY** en **SHARE**, cualquier **HOST PODRÁ ENTRAR** al **SHARE** excepto los **DENY**
+
+5. **SI ESTÁN LAS 2 OPCIONES, PREVALECE HOST ALLOW.**
+
+* host allow = 
+
+   * HOSTNAME = ftp.example.com
+
+   * IP
+
+   * Domain names
+
+   * Netgroups @
+
+   * Subnets --> 130.64.6.
+
+   * ALL --> PARA TODO
+
+   * EXCEPTO --> Excepciones 
+------------------------------------------------------------------------
+
 ### Logging
+
+------------------------------------------------------------------------
 
 ## Roles del servidor SAMBA
 
+------------------------------------------------------------------------
+
 ### Roles
+
+* Roles SAMBA:
+
+   * Servidor Standalone.
+
+   * PDC controlador Principal de Dominio
+
+   * Member Server
+
+   * Browser.
+
+   * Name Resolution.
+
+### STANDALONE SERVER OPTIONS
+
+* **[security]** = user / share (deprecated)
+
+* [**passdb_backend**] = tdbsam --> Es la BD.
+
+```
+# ----------------------- Standalone Server Options ------------------------
+# security = the mode Samba runs in. This can be set to user, share (deprecated), or server
+(deprecated).
+# passdb backend = the backend used to store user information in. New installations should
+use either tdbsam or ldapsam. No additional configuration is required for tdbsam. The
+"smbpasswd" utility is available for backwards compatibility.
+security = user
+passdb backend = tdbsam
+
+```
+
+### DOMAIN CONTROLLER OPTIONS (PDC)
+
+* **[security]** = user
+
+* **[passdb_backend]** = tdbsam
+
+* **[domain_master]** = yes --> Especifica el Domain Master Browser.
+
+* **[domain_logons]** = Permite SAMBA a proveer NETWORK LOGON para Windows.
+
+* **[logon_script]** = Ejecuta un script NETLOGON.
+
+* **[logon_path]** = Especifica el PROFILE del usuario.
+
+```
+; security = user
+; passdb backend = tdbsam
+; domain master = yes
+; domain logons = yes
+# the following login script name is determined by the machine name
+# (%m):
+; logon script = %m.bat
+# the following login script name is determined by the UNIX user used:
+; logon script = %u.bat
+; logon path = \\%L\Profiles\%u
+# use an empty path to disable profile support:
+; logon path =
+# various scripts can be used on a domain controller or a stand-alone
+# machine to add or delete corresponding UNIX accounts:
+; add user script = /usr/sbin/useradd "%u" -n -g users
+; add group script = /usr/sbin/groupadd "%g"
+; add machine script = /usr/sbin/useradd -n -c "Workstation (%u)" -M -d /nohome -s
+/bin/false "%u"
+; delete user script = /usr/sbin/userdel "%u"
+; delete user from group script = /usr/sbin/userdel "%u" "%g"
+; delete group script = /usr/sbin/groupdel "%g"
+```
+
+### DOMAIN MEMBERS
+
+* **[security]** = domain / ads
+
+* **[passdb_backend]** = tdbsam
+
+* **[realm]** = yes --> Security = server. Especifica que AD forma parte de algo.
+
+* **[password_server]** = Sólo se usa si hay security = server.
+
+```
+; security = domain
+; passdb backend = tdbsam
+; realm = MY_REALM
+; password server = <NT-Server-Name>
+```
+
+### BROWSER CONTROL OPTIONS
+
+* **[local_master]** = no --> SAMBA no se convierte en MASTER BROWSER. Si es YES --> Hay ELECCIONES.
+
+* **[OS_LEVEN]** = Determina la precedencia del Servidor unas ELECCIONES de MASTER BROWSER.
+
+* **[preferred_master]** = yes --> Fuerza unas ELECCIONES DE MASTER BROWSER.
+
+```
+; local master = no
+; os level = 33
+; preferred master = yes
+```
+
+### NAME RESOLUTION
+
+* **[wins_support]** = yes --> NMBD habilita WINS en el SERVIDOR.
+
+* **[wins_server]** = Dice a NMBD que sea un cliente WINS
+
+* **[wins_proxy]** = yes --> SAMBA responde queries de clientes WINS con el proxy capado.
+
+* **[dns_proxy]** = yes --> SAMBA intente resolver el nombre de la NetBIOS via DNS..
+
+```
+; wins support = yes
+; wins server = w.x.y.z
+; wins proxy = yes
+; dns proxy = yes
+```
+
+------------------------------------------------------------------------
 
 #### Role Standalone
 
+**testparm**
+
+**Server role: ROLE_STANDALONE**
+
+
+```
+[root@portatil samba]# testparm
+Load smb config files from /etc/samba/smb.conf
+rlimit_max: increasing rlimit_max (1024) to minimum Windows limit (16384)
+Processing section "[homes]"
+Processing section "[printers]"
+Processing section "[public]"
+Processing section "[documentacio]"
+Processing section "[repositori]"
+Loaded services file OK.
+Server role: ROLE_STANDALONE
+Press enter to see a dump of your service definitions
+```
+
+```
+[global]
+      workgroup = GRUPM06
+      netbios name = SMBSERVER
+      server string = edt - Samba Server Version %v
+      log file = /var/log/samba/log.%m
+      max log size = 50
+      wins support = Yes
+      idmap config * : backend = tdb
+      cups options = raw
+[homes]
+      comment = Home Directories
+      read only = No
+      browseable = No
+
+[printers]
+      comment = All Printers
+      path = /var/spool/samba
+      printable = Yes
+      print ok = Yes
+      browseable = No
+
+[public]
+      comment = Public Stuff
+      path = /var/lib/samba/shares/public
+      read only = No
+      guest ok = Yes
+
+[documentacio]
+      comment = System Documentation
+      path = /var/lib/samba/shares/samba-docs
+      guest ok = Yes
+
+[repositori]
+      comment = Repositori de dades
+      path = /var/lib/samba/shares/repositori
+      write list = +staff
+      read only = No
+      guest ok = Yes
+```
+
+```
+[root@portatil samba]# smbclient -U% -L localhost
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+Sharename Type Comment
+--------- ---- -------
+IPC$ IPC IPC Service (edt - Samba Server Version 3.6.12-1.fc17)
+repositori Disk Repositori de dades
+documentacio Disk System Documentation
+public Disk Public Stuff
+Cups-PDF Printer Cups-PDF
+ClassPDF Printer Classe PF printers
+
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+
+Server Comment
+--------- -------
+SMBSERVER edt - Samba Server Version 3.6.12-1.fc17
+
+Workgroup Master
+--------- -------
+GRUPM06 SMBSERVER
+```
+
+```
+[pere@portatil ~]$ smbtree
+Enter pere's password:
+GRUPM06
+\\SMBSERVER edt - Samba Server Version 3.6.12-1.fc17
+\\SMBSERVER\ClassPDF Classe PF printers
+\\SMBSERVER\Cups-PDF Cups-PDF
+\\SMBSERVER\public Public Stuff
+\\SMBSERVER\documentacio System Documentation
+\\SMBSERVER\repositori Repositori de dades
+\\SMBSERVER\IPC$ IPC Service (edt - Samba Server …..fc17)
+
+```
+
+------------------------------------------------------------------------
+
 #### Role PDC Domain Server
+
+**Server role: ROLE_DOMAIN_PDC**
+
+```
+[root@c2ae73d0f616 /]# testparm
+Load smb config files from /etc/samba/smb.conf
+Processing section "[homes]"
+Processing section "[printers]"
+Processing section "[documentation]"
+Processing section "[manpages]"
+Processing section "[public]"
+Processing section "[privat]"
+Loaded services file OK.
+WARNING: You have some share names that are longer than 12 characters.
+These may not be accessible to some older clients.
+(Eg. Windows9x, WindowsMe, and smbclient prior to Samba 3.0.)
+Server role: ROLE_DOMAIN_PDC
+```
+
+------------------------------------------------------------------------
 
 ## Repaso de órdenes CLIENTE
 
+------------------------------------------------------------------------
+
 ### SMBCLIENT
+
+```
+]$ smbclient -L smbserver
+Enter unknowns's password:
+Anonymous login successful
+
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+Sharename Type Comment
+--------- ---- -------
+public Disk Public Stuff
+documentacio Disk System Documentation
+repositori Disk Repositori de dades
+IPC$ IPC IPC Service (edt - Samba Server Version 3.6.12-1.fc17)
+Cups-PDF Printer Cups-PDF
+ClassPDF Printer Classe PF printers
+
+Anonymous login successful
+
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+Server Comment
+SMBSERVER edt - Samba Server Version 3.6.12-1.fc17
+Workgroup Master
+GRUPM06 SMBSERVER
+```
+
+------------------------------------------------------------------------
 
 #### Usuarios autenticados
 
+```
+[pere@client ~]$ smbclient //smbserver/public
+Enter pere's password:
+session setup failed: NT_STATUS_LOGON_FAILURE
+```
+```
+[root@smbserver samba]# smbpasswd -a pere
+New SMB password:
+Retype new SMB password:
+Added user pere.
+```
+```
+[pere@clientl ~]$ smbclient //smbserver/public
+Enter pere's password:
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+smb: \>
+```
+```
+[pau@client ~]$ smbclient //smbserver/public
+Enter pau's password:
+session setup failed: NT_STATUS_LOGON_FAILURE
+```
+```
+[pau@client ~]$ smbclient //smbserver/public -U guest
+Enter guest's password:
+Anonymous login successful
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+smb: \>
+```
+
+```
+[pere@client ~]$ smbclient //smbserver/documentacio
+Enter pere's password:
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+smb: \> quit
+```
+
+```
+[pere@client ~]$ smbclient //smbserver/documentacio pere
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+smb: \> quit
+
+```
+
+```
+[pere@client ~]$ smbclient //smbserver/documentacio -U pere%pere
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+smb: \> quit
+
+```
+
+------------------------------------------------------------------------
+
 #### Órdenes desatendidas
+
+```
+$ smbclient //smbserver/public -c "ls " -U pere%pere | grep "^ " | cut -d ' ' -f 3 - | sort
+```
+
+```
+$ alias smbls='smbclient //smbserver/public -c \"ls \" -U pere%pere | grep "^ " | cut -d\ -f 3 - | sort
+
+$ smbls
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+.
+..
+A05-14-serveisxarxa.pdf
+activitats_asix_m06_uf1_nf5_2014-2015.pdf
+```
+
+```
+smbls( )
+{
+share=`echo $1 | cut -d '/' -f '1-4'`
+dir=`echo $1 | cut -d '/' -f '5-'`
+smbclient $share -c "cd $dir; ls" -A ~/.smbpw | \
+grep "^ " | cut -d ' ' -f 3 - | sort
+}
+```
+
+
+------------------------------------------------------------------------
 
 #### Shares Backups
 
+```
+[pere@client ~]$ smbclient //smbserver/public -U pere%pere -Tc public.tar
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+159579 ( 3315,7 kb/s) \A05-14-serveisxarxa.pdf
+66227 (64674,8 kb/s) \activitats_asix_m06_uf1_nf5_2014-2015.pdf
+tar: dumped 2 files and directories
+Total bytes written: 226304
+```
+
+```
+[pere@client ~]$ ll public.tar
+-rw-r--r-- 1 pere pere 228352 15 nov 19:11 public.tar
+```
+
+```
+[pere@client ~]$ tar tvf public.tar
+-rw-r--r-- 0/0 159579 2014-11-15 17:21 ./A05-14-serveisxarxa.pdf
+-rw-r--r-- 0/0 66227 2014-11-15 17:15 ./activitats_asix_m06_uf1_nf5_2014-2015.pdf
+```
+
+```
+[pere@client ~]$ smbclient //smbserver/public -U pere%pere
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.6.12-1.fc17]
+smb: \> tarmode full hidden system quiet
+tarmode is now full, system, hidden, noreset, quiet
+smb: \> tar c public2.tar
+tar: dumped 2 files and directories
+Total bytes written: 226304
+smb: \> quit
+```
+
+```
+[pere@client ~]$ ll public2.tar
+-rw-r--r-- 1 pere pere 228352 15 nov 19:17 public2.ta
+```
+
+------------------------------------------------------------------------
+
 ### CIFS - SMBFS
+
+```
+# apt-get install cifs-utils
+```
+
+
+```
+[root@client ~]# mount -t cifs //127.0.01/public /mnt -o user=pere,password=pere
+
+[root@client ~]# mount | grep cifs
+//127.0.01/public on /mnt type cifs
+(rw,nosuid,nodev,noexec,relatime,vers=1.0,sec=ntlmssp,cache=strict,unc=\\127.0.01\public,
+username=pere,domain=SMBSERVER,uid=0,noforceuid,gid=0,noforcegid,addr=127.0.0.1,u
+nix,posixpaths,serverino,acl,rsize=1048576,wsize=65536,actimeo=1)
+
+[root@client ~]# ls /mnt/
+A05-14-serveisxarxa.pdf activitats_asix_m06_uf1_nf5_2014-2015.pdf
+
+[root@client ~]# umount /mnt
+```
+
+```
+# mount -t cifs //127.0.01/public /mnt -o guest
+# mount -t cifs //127.0.01/public /mnt -o user=pere,password=pere
+# mount -t cifs //127.0.01/public /mnt -o credentials=file_passwd.txt
+# mount -t cifs //127.0.01/public /mnt -o user=pere,password=pere,\
+uid=pere,gid=pere,file_mode=0664,dir_mode=0775
+```
+
+
+```
+[root@client ~]# mount -t cifs //127.0.01/public /mnt -o
+guest,uid=pere,gid=pere,file_mode=0644,dir_mode=0755
+
+[root@client ~]# uname -a > /mnt/uname.txt
+
+[root@client ~]# ls -la /mnt/
+drwxrwxrwx 2 pere pere 0 15 nov 19:56 .
+drwxr-xr-x. 24 root root 4096 15 nov 14:04 ..
+-rw-rw-r-- 1 pere pere 159579 15 nov 17:21 A05-14-serveisxarxa.pdf
+-rw-rw-r-- 1 pere pere 66227 15 nov 17:15 activitats_asix_m06_uf1_nf5_2014-2015.pdf
+-rw-r--r-- 1 pere pere 113 15 nov 19:53 uname.txt
+
+[root@client ~]# mkdir /mnt/noudir
+
+[root@portatil samba]# ls -ld /mnt/noudir/
+drwxr-xr-x 2 pere pere 0 15 nov 19:59 /mnt/noudir/
+```
+
+
+
+------------------------------------------------------------------------
 
 #### Múltiples Samba Servers
 
+```
+[pere@client ~]$ smbtree
+Enter pere's password:
+GRUPM06
+   \\SMBSERVER edt - Samba Server Version 3.6.12-1.fc17
+      \\SMBSERVER\ClassPDF Classe PF printers
+      \\SMBSERVER\NullPrinter-01 Printer /dev/null
+      \\SMBSERVER\ClassNulls Classe de NullPrinters
+      \\SMBSERVER\ClassAll Classe amb totes les impressores
+      \\SMBSERVER\NullPrinter-02 Priner /dev/null
+      \\SMBSERVER\Virtual_PDF_Printer Virtual PDF Printer
+      \\SMBSERVER\Cups-PDF Cups-PDF
+      \\SMBSERVER\public Public Stuff
+      \\SMBSERVER\documentacio System Documentation
+      \\SMBSERVER\repositori Repositori de dades
+      \\SMBSERVER\IPC$ IPC Service (edt - Samba Version 3.6.12-1.fc17)
+   
+   \\SMBHP1 edt - Samba Server Version 3.4.9-60.fc12
+      \\SMBHP1\IPC$ IPC Service (edt - Samba Server Version 3.4.9-60.fc12)
+      \\SMBHP1\hprepositori Repositori de dades
+      \\SMBHP1\hpdocumentacio System Documentation
+      \\SMBHP1\hppublic Public Stuff
+```
+
+
+```
+[pere@client ~]$ smbclient -L smbhp1
+Enter pere's password:
+Anonymous login successful
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.4.9-60.fc12]
+   Sharename Type Comment
+   hppublic Disk Public Stuff
+   hpdocumentacio Disk System Documentation
+   hprepositori Disk Repositori de dades
+   IPC$ IPC IPC Service (edt - Samba Server Version 3.4.9-60.fc12)
+Anonymous login successful
+Domain=[GRUPM06] OS=[Unix] Server=[Samba 3.4.9-60.fc12]
+   Server Comment
+   SMBHP1 edt - Samba Server Version 3.4.9-60.fc12
+   SMBSERVER edt - Samba Server Version 3.6.12-1.fc17
+   Workgroup Master
+   GRUPM06 SMBSERVER
+```
+
+
+### EJEMPLO DE M06 ASO SAMBA WORKGROUP --> MASTER BROWSER
+
+```
+# -----------------------------------------------------------------------------------------------
+# Example M06-ASO configuration: samba workgroup => master browser
+# [global] -----------------------------------------------------------------------------------------------
+      workgroup = GRUPM06
+      server string = edt - Samba Server Version %v
+      netbios name = smbserver
+      encrypt passwords = yes
+      wins support = yes
+      read only = no
+      local master = yes
+      os level = 34
+      preferred master = yes
+# -----------------------------------------------------------------------------------------------------
+# Example M06-ASO configuration: samba workgroup => member, no master
+# [global] -------------------------------------------------------------------------------------------------------
+      workgroup = GRUPM06
+      server string = edt - Samba Server Version %v
+      netbios name = smbhp1
+      encrypt passwords = yes
+      wins support = no
+      read only = no
+      # local master = no
+      # os level = 33
+      # preferred master = no
+
+```
+
+
+------------------------------------------------------------------------
+
 ## Prácticas
+
+* Muntar dins dels homes dels usuaris un altre home (com a classe) via samba.
+Cal instal·lar els paquets samba i cifs-utils-6.7-1.fc24.x86_64
+Configurar pam_mount.conf.xml: <volume user="*" fstype="cifs" server="samba"
+path="%(USER)" mountpoint="~/%(USER)" />
+
+```
+[root@host docker]# su - local01
+[local01@host ~]$ su - anna
+pam_mount password:
+
+[anna@host ~]$ ll
+total 0
+drwx------+ 2 anna alumnes 0 Dec 14 18:31 anna
+
+[anna@host ~]$ mount -t cifs
+//samba/anna on /tmp/home/anna/anna type cifs
+(rw,relatime,vers=1.0,cache=strict,username=anna,domain=,uid=5002,forceuid,gid=600,force
+gid,addr=172.21.0.2,unix,posixpaths,serverino,mapposix,acl,rsize=1048576,wsize=65536,ech
+o_interval=60,actimeo=1)
+
+```
+
+------------------------------------------------------------------------
 
 ### Práctica 1: Homes Samba
 
+------------------------------------------------------------------------
+
 ### Práctica 2: LDAP + SAMBA + PAM
 
+Usant el **servidor LDAP** amb els usuaris habituals: 
+
+   * En servidor SAMBA que reconeix els usuaris de LDAP.
+   
+   * Un host PAM que permet autenticació local i LDAP. 
+   
+   * Als usuaris locals es munta undirectori tmp de tmpfs de 100M. 
+   
+   * Als usuaris LDAP es munta el seu home dins del home via samba
+
+------------------------------------------------------------------------
+
 ## Práctica: SAMBA + LDAP + PAM
+
+## Imatges:
+   
+   * keshikid03/samba21:base_vFinal 
+   
+      * Servidor SAMBA amb usuaris locals i usuaris LDAP (unix). 
+      
+      * Es creen comptes d'usuari samba de usuaris locals i de alguns dels usuaris ldap (no tots). 
+      
+      *Es creen també els directoris home dels usuaris de ldap i se'ls assigna la pripietat/grup pertinent. 
+      
+      * Finalment s'exporten els shares d'exemple usuals i els [homes] dels usuaris samba. 
+      
+      * D'aquesta manera un hostpam (amb ldap) pot muntar els homes dels usuaris (home dins home) usant samba.
+
+   * keshikid03/ldap21:group 
+   
+      * Incorpora els posixGroup dels usuaris (per memberUid).
+
+   * keshikid03/pam21:ldap 
+   
+      * Host pam amb authenticació ldap. 
+      
+      * Utilitza l'ordre authconfig per configurar l'autenticació i a més a més crea els home dels usuaris i munta un tmpfs als usuaris. Atenció, per poder realitzar el mount cal que el container es generi amb l'opció --privileged. 
+      
+      * Posar en lloc d’aquest preferim usar el edtasixm06/hostpam:18homenfs
+
+
+
+## Arquitectura
+
+Per implementar un host amb usuaris unix i ldap on els homes dels usuaris es muntin via samba de un servidor de disc extern cal:
+
+   * **2hisx** Una xarxa propia per als containers implicats.
+
+   * **ldap21:group** Un servidor ldap en funcionament amb els usuaris de xarxa.
+
+   * **samba21:base_vFinal** Un servidor samba que exporta els homes dels usuaris com a shares via [homes] Caldrà fer les tasques següents en el servidor samba:
+
+      ○ **Usuaris unix** Samba requereix la *existència* de usuaris unix. Per tant caldrà disposar dels *usuaris unix*, poden ser locals o de xarxa via LDAP. 
+      
+      Així doncs, el *servidor samba* ha d'estar *configurat* amb *nscd i nslcd* per *poder accedir al ldap*.
+
+      Amb *getent* s'han de poder llistar tots els usuaris i grups de xarxa.
+
+      ○ **homes** Cal que els usuaris tinguin un directori home. Els usuaris unix local ja en tenen en crear-se l'usuari, però els *usuaris LDAP* no. 
+      
+      Per tant cal crear el directori *home dels usuaris ldap* i assignar-li la propietat i el grup de l'usuari
+      apropiat.
+
+      ○ **Usuaris samba** 
+         
+         * Cal **crear els comptes d'usuari samba** (recolsats en l'existència del mateix usuari **unix**). 
+         
+         * Per a **cada usuari samba** els pot crear amb **smbpasswd** el compte d'usuasi samba assignant-li el password de samba. 
+         
+         * Convé que sigui el mateix que el de *ldap* per tal de que en fer login amb un sol password es validi l'usuari (auth de *pam_ldap.so*) i es munti el home via samba (*pam_mount.so*). 
+         
+         * Samba pot desar els seus usuaris en una base de dades local anomenada **tdbsam** o els pot desar en un servidor ldap usant com a backend **ldapsam**. 
+         
+         * El mecanisme més simple és usar **tdbsam** i **smbpasswd** i **pdbedit** com a utilitats.
+
+
+   * **pam21:ldap** Un hostpam configurat per accedir als usuaris **locals** i **ldap** i que usant **pam_mount.so** munta dins del home dels usuaris un home de xarxa via samba. 
+   
+      * Cal configurar **/etc/security/pam_mount.conf.xml** per muntar el recurs samba dels [homes].
+
+### EJECUCIÓN
+
+```
+docker network create 2HISX
+
+docker run --rm --name ldap.edt.org -h ldap.edt.org --net 2hisx -d keshikid03/ldap21:group
+
+docker run --rm --name pam.edt.org-h pam.edt.org --net 2hisx  --privileged -it keshikid03/pam21:ldap /bin/bash
+
+docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:139 --privileged -d keshikid03/samba21:base_vFinal
+```
+
+### CONFIGURACIÓN CLAVE
+
+```
+[global]
+      workgroup = MYGROUP
+      server string = Samba Server Version %v
+      log file = /var/log/samba/log.%m
+      max log size = 50
+      security = user
+      passdb backend = tdbsam
+      load printers = yes
+      cups options = raw
+
+[homes]
+      comment = Home Directories
+      browseable = no
+      writable = yes
+      ; valid users = %S
+      ; valid users = MYDOMAIN\%S
+```
+
+### CONFIGURACÓN DE PAM21:LDAP --> PAM.MOUNT.CONF
+
+* /etc/security/pam_mount.conf.xml
+
+```
+<
+   volume user="*" 
+   fstype="cifs" 
+   server="smb.edt.org" 
+   path="%(USER)" 
+   mountpoint="~/%(USER)"
+/>
+```
+
+### EJEMPLO 1 PAM21:LDAP
+
+```
+[root@host docker]# su - local01
+
+[local01@host ~]$ su - anna
+pam_mount password:
+
+[anna@host ~]$ ll
+total 0
+drwxr-xr-x+ 2 anna alumnes 0 Dec 14 20:27 anna
+
+[anna@host ~]$ mount -t cifs
+//samba2/anna on /tmp/home/anna/anna type cifs
+(rw,relatime,vers=1.0,cache=strict,username=anna,domain=,uid=5002,forceuid,gid=600,force
+gid,addr=172.21.0.2,unix,posixpaths,serverino,mapposix,acl,rsize=1048576,wsize=65536,ech
+o_interval=60,actimeo=1)
+
+```
+
+### EJEMPLO 2 PAM21:LDAP
+
+```
+#! /bin/bash
+# @edt ASIX M06 2018-2019
+# instal.lacio
+# Creacio usuaris locals
+groupadd localgrp01
+groupadd localgrp02
+useradd -g users -G localgrp01 local01
+useradd -g users -G localgrp01 local02
+useradd -g users -G localgrp01 local03
+useradd -g users -G localgrp02 local04
+useradd -g users -G localgrp02 local05
+useradd -g users -G localgrp02 local06
+echo "local01" | passwd --stdin local01
+echo "local02" | passwd --stdin local02
+echo "local03" | passwd --stdin local03
+echo "local04" | passwd --stdin local04
+echo "local05" | passwd --stdin local05
+echo "local06" | passwd --stdin local06
+# Activar nscd, nslcd, nsswitch (lligar getent amb lsap)
+#bash /opt/docker/auth.sh
+cp /opt/docker/nslcd.conf /etc/nslcd.conf
+cp /opt/docker/ldap.conf /etc/openldap/ldap.conf
+cp /opt/docker/nsswitch.conf /etc/nsswitch.conf
+#cp /opt/docker/system-auth-edt /etc/pam.d/system-auth-edt
+#cp /opt/docker/pam_mount.conf.xml /etc/security/pam_mount.conf.xml
+#ln -sf /etc/pam.d/system-auth-edt /etc/pam.d/system-auth
+/usr/sbin/nslcd && echo "nslcd Ok"
+/usr/sbin/nscd && echo "nscd Ok"
+# Crear els homes dels usuaris de LDAP (crear-omplir-chown)
+mkdir /tmp/home
+mkdir /tmp/home/pere
+mkdir /tmp/home/pau
+mkdir /tmp/home/anna
+mkdir /tmp/home/marta
+mkdir /tmp/home/jordi
+mkdir /tmp/home/admin
+cp README.md /tmp/home/pere
+cp README.md /tmp/home/pau
+cp README.md /tmp/home/anna
+cp README.md /tmp/home/marta
+cp README.md /tmp/home/jordi
+cp README.md /tmp/home/admin
+chown -R pere.users /tmp/home/pere
+chown -R pau.users /tmp/home/pau
+chown -R anna.alumnes /tmp/home/anna
+chown -R marta.alumnes /tmp/home/marta
+chown -R jordi.users /tmp/home/jordi
+chown -R admin.wheel /tmp/home/admin
+# Generar dos directoris de shares samba d’exemple: public i privat
+mkdir /var/lib/samba/public
+chmod 777 /var/lib/samba/public
+cp /opt/docker/* /var/lib/samba/public/.
+mkdir /var/lib/samba/privat
+#chmod 777 /var/lib/samba/privat
+cp /opt/docker/smb.conf /etc/samba/smb.conf
+cp /opt/docker/*.md /var/lib/samba/privat/.
+# Usuaris locals super3 unix i samba
+useradd patipla
+useradd lila
+useradd roc
+useradd pla
+echo -e "patipla\npatipla" | smbpasswd -a patipla
+echo -e "lila\nlila" | smbpasswd -a lila
+echo -e "roc\nroc" | smbpasswd -a roc
+echo -e "pla\npla" | smbpasswd -a pla
+# Crear els comptes Samba dels usuaris LDAP
+echo -e "pere\npere" | smbpasswd -a pere
+echo -e "pau\npau" | smbpasswd -a pau
+echo -e "anna\nanna" | smbpasswd -a anna
+echo -e "marta\nmarta" | smbpasswd -a marta
+echo -e "jordi\njordi" | smbpasswd -a jordi
+echo -e "admin\nadmin" | smbpasswd -a admin
+
+```
+
+# En resum:
+● Cal disposar d’usuaris unix (locals o de LDAP)
+● En base als usuaris unix es creen els de SAMBA (el nom es el que fa el lligam al UID de
+unix).
+● Cal crear els homes dels usaris LDAP (no en tenen) i assignar apropiadament el
+propietari i grup.
+● Et voilà!
+
+
+------------------------------------------------------------------------
