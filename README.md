@@ -13,8 +13,19 @@ ASIX M06-ASO Escola del treball de barcelona
 
 * **keshikid03/samba21:base** Servidor SAMBA bàsic amb *shares* d'exemple.
 
-* **keshikid03/samba21:base_vFinal** Servidor SAMBA bàsic amb *shares* d'exemple. Versión Final. 17.01.22
+* **keshikid03/samba21:base_vFinal** 
 
+	* Servidor SAMBA bàsic amb *shares* d'exemple. Versión Final. 17.01.22
+
+ 	* Servidor SAMBA amb usuaris locals i usuaris LDAP (Unix).
+ 	
+ 	* Es creen comptes d'usuari samba de usuaris locals i de alguns dels usuaris ldap (no tots).
+ 	
+ 	* Es creen també els directoris home dels usuaris de ldap i se'ls assigna la pripietat/grup pertinent.
+ 	
+ 	* Finalment s'exporten els shares d'exemple usuals i els [homes] dels usuaris samba.
+ 	
+ 	* D'aquesta manera un hostpam (amb ldap) pot muntar els homes dels usuaris (home dins home) usant samba.
 
 #### Execució
 
@@ -37,7 +48,11 @@ docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:
 
   * **2hisx** Una xarxa propia per als containers implicats.
 
-   * **ldap21:group** Un servidor ldap en funcionament amb els usuaris de xarxa.
+   * **ldap21:group** 
+   
+   	* Un servidor ldap en funcionament amb els usuaris de xarxa.
+   	
+   	* Incorpora els posixGroup dels usuaris (per memberUid).
 
    * **samba21:base_vFinal** Un servidor samba que exporta els homes dels usuaris com a shares via [homes] Caldrà fer les tasques següents en el servidor samba:
 
@@ -68,8 +83,11 @@ docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:
    * **pam21:ldap** Un hostpam configurat per accedir als usuaris **locals** i **ldap** i que usant **pam_mount.so** munta dins del home dels usuaris un home de xarxa via samba. 
    
       * Cal configurar **/etc/security/pam_mount.conf.xml** per muntar el recurs samba dels [homes].
+      
+      * Host pam amb authenticació ldap.
+      
+      * Utilitza l'ordre authconfig per configurar l'autenticació i a més a més crea els home dels usuaris i munta un tmpfs als usuaris. Atenció, per poder realitzar el mount cal que el container es generi amb l'opció --privileged.
 
- * **keshikid03/samba21:pam** Host amb un servidor samba que té usuaris unix locals, usuaris samba locals i usuaris de ldap. 
  
 
 ==================================================================================
