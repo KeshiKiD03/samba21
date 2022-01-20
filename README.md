@@ -32,13 +32,45 @@ docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:
 docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:139 --privileged -it keshikid03/samba21:base_vFinal /bin/bash
 ```
 
+
+#### NECESARI (ARQUITECTURA) (LDAP + PAM + SAMBA):
+
+  * **2hisx** Una xarxa propia per als containers implicats.
+
+   * **ldap21:group** Un servidor ldap en funcionament amb els usuaris de xarxa.
+
+   * **samba21:base_vFinal** Un servidor samba que exporta els homes dels usuaris com a shares via [homes] Caldrà fer les tasques següents en el servidor samba:
+
+      ○ **Usuaris unix** Samba requereix la *existència* de usuaris unix. Per tant caldrà disposar dels *usuaris unix*, poden ser locals o de xarxa via LDAP. 
+      
+      Així doncs, el *servidor samba* ha d'estar *configurat* amb *nscd i nslcd* per *poder accedir al ldap*.
+
+      Amb *getent* s'han de poder llistar tots els usuaris i grups de xarxa.
+
+      ○ **homes** Cal que els usuaris tinguin un directori home. Els usuaris unix local ja en tenen en crear-se l'usuari, però els *usuaris LDAP* no. 
+      
+      Per tant cal crear el directori *home dels usuaris ldap* i assignar-li la propietat i el grup de l'usuari
+      apropiat.
+
+      ○ **Usuaris samba** 
+         
+         * Cal **crear els comptes d'usuari samba** (recolsats en l'existència del mateix usuari **unix**). 
+         
+         * Per a **cada usuari samba** els pot crear amb **smbpasswd** el compte d'usuasi samba assignant-li el password de samba. 
+         
+         * Convé que sigui el mateix que el de *ldap* per tal de que en fer login amb un sol password es validi l'usuari (auth de *pam_ldap.so*) i es munti el home via samba (*pam_mount.so*). 
+         
+         * Samba pot desar els seus usuaris en una base de dades local anomenada **tdbsam** o els pot desar en un servidor ldap usant com a backend **ldapsam**. 
+         
+         * El mecanisme més simple és usar **tdbsam** i **smbpasswd** i **pdbedit** com a utilitats.
+
+
+   * **pam21:ldap** Un hostpam configurat per accedir als usuaris **locals** i **ldap** i que usant **pam_mount.so** munta dins del home dels usuaris un home de xarxa via samba. 
+   
+      * Cal configurar **/etc/security/pam_mount.conf.xml** per muntar el recurs samba dels [homes].
+
  * **keshikid03/samba21:pam** Host amb un servidor samba que té usuaris unix locals, usuaris samba locals i usuaris de ldap. 
  
- A aquests usuaris de ldap se'ls crea el compte de samba (hardcoded) i el seu home.
-   
-   * (hardcoded: cal crear, copiar skel i assignar permisos). 
-   
-   Exporta els homes dels usuaris via el share *[homes]*.
 
 ==================================================================================
 
