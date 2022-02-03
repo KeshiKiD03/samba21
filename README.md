@@ -3194,7 +3194,7 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 		
 		* Hacemos bash startup.sh
 		
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS3.png" />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS3.PNG" />
 		
 		* Hacemos un ldapsearch -x -LLL
 		
