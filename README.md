@@ -2941,7 +2941,7 @@ Per implementar un host amb usuaris unix i ldap on els homes dels usuaris es mun
 ```
 docker network create 2HISX
 
-docker run --rm --name ldap.edt.org -h ldap.edt.org --net 2hisx -d keshikid03/ldap21:group
+docker run --rm --name ldap.edt.org -h ldap.edt.org -P 389:389 --net 2hisx -d keshikid03/ldap21:group
 
 docker run --rm --name pam.edt.org-h pam.edt.org --net 2hisx  --privileged -it keshikid03/pam21:ldap /bin/bash
 
@@ -3090,4 +3090,150 @@ propietari i grup.
 ● Et voilà!
 
 
+
+---------
+
+## PRÁCTICA PAM - LDAP - SAMBA en AWS Educate
+
+1. Iniciar sesión en https://awsacademy.instructure.com/
+
+2. Irnos a Courses ..
+
+	* Lab Foundation
+
+		* Modules
+		
+			* AWS
+			
+3. Abrir AWS y luego EC2. 
+
+4. Crear **"GROUP POLICES"**:
+
+	* SAMBA vFinal:
+	
+		* PORT 445 i 139
+	
+	* SSH:
+	
+		* PORT 22
+	
+	* LDAP Group:
+	
+		* PORT 389
+	
+	* PAM LDAP: (Client, conté la RESOLUCIÓ via NSSWITCH)
+	
+5. Creamos una nueva Instancia de Debian. t2.Small de 4GB RAM.
+
+6. Seleccionamos nuestro Group Policty
+
+7. Nos descargamos nuestra clave privada RSA.
+
+8. Abrimos una terminal de Debian/Ubuntu.
+
+9. Nos conectamos con la ip pública **admin@ip-publica**.
+
+     <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS0.png" />   
+     
+10. Nos descargamos e instalamos DOCKER. 
+
+*https://chachocool.com/como-instalar-docker-en-debian-10-buster/*
+
+11. Clonamos el GIT de nuestros repositorios SAMBA, LDAP y PAM en AWS.
+
+12. Creamos las máquinas SAMBA:base_vFinal, PAM:ldap, LDAP:group.
+
+13. Desplegamos las máquinas.
+
+
+```
+sudo docker network create 2hisx
+
+sudo docker run --rm --name ldap.edt.org -h ldap.edt.org -p 389:389 --net 2hisx -d keshikid03/ldap21:group
+
+sudo docker run --rm --name pam.edt.org -h pam.edt.org --net 2hisx  --privileged -it keshikid03/pam21:ldap /bin/bash
+
+sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:139 --privileged -d keshikid03/samba21:base_vFinal bash
+```
+
+	13.1. Probamos que funcione LDAP:Group desde AWS (Modo Detach):
+	
+		* sudo docker run --rm --name ldap.edt.org -h ldap.edt.org -p 389:389 --net 2hisx -d keshikid03/ldap21:group
+	
+		* Cambiamos el /etc/ldap/ldap.conf
+		
+			* dc=edt,dc=org
+			
+			* ldap://ldap.edt.org
+		
+		* Modificamos el /etc/host --> [ip_docker] [nom_host_ldap]
+		
+		* Instalamos el ldap-utils
+		
+		* Verificamos que funciona
+		
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS1.png" /> 
+
+	13.2 Probamos que funcione desde el PAM:Ldap desde AWS (Modo Interactive):
+	
+		* sudo docker run --rm --name pam.edt.org -h pam.edt.org --net 2hisx  --privileged -it keshikid03/pam21:ldap /bin/bash
+
+		* bash startup.sh
+		
+		* realizamos un ldapsearch -x -LLL
+		
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS2.png" /> 
+		
+		* modificamos el /etc/security/pam_mount.conf.xml *NOT YET AFTER SAMBA*
+	
+	13.3 Probamos que funcione el SAMBA desde AWS (Modo interactive).
+	
+		* sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:139 --privileged -d keshikid03/samba21:base_vFinal bash
+		
+		* Modificamos un mom para que sea interactivo, el startup.sh y le quitamos el -F
+		
+		* Hacemos bash startup.sh
+		
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS3.png" />
+		
+		* Hacemos un ldapsearch -x -LLL
+		
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS4.png" />
+
+
+		* Volvemos al PAM:ldap y modificamos el pam_mount.conf.xml --> Tiene que apuntar a la IP de SAMBA (AWS).
+		
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS5.png" />
+
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS6.png"  />
+
+14. Comprobamos de forma LOCAL EN AWS.
+
+	14.1. SMB.EDT.ORG --> su -l pere
+	
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS7.png"  />
+
+	* Observamos que correctamente:
+	
+		1. Accedemos al USUARIO LDAP "PERE" y su home de LDAP es /tmp/home/%USER/
+		
+		2. El PAM_MOUNT.CONF.XML monta automáticamente vía TIPO "CIFS" de su home de SAMBA (~/%USER) (Alojado en smb.edt.org).
+		
+		3. Podemos probar de CREAR con el USUARIO PERE y vemos.
+		
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS8.png"  />
+
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS9.png"  />
+		
+		4. Podemos probar de hacer un SMBCLIENT -U pere%pere -L smb.edt.org / smbclient -N -L smb.edt.org para ver los recursos y shares.
+		
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS10.png"  />
+
+### VEMOS QUE FUNCIONA
+
+14. En LOCAL abrimos una máquina PAM y las conectamos.
+
+	* 
+
+15. Probamos que funcione.
 ------------------------------------------------------------------------
