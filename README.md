@@ -3133,7 +3133,7 @@ propietari i grup.
 
 9. Nos conectamos con la ip pública **admin@ip-publica**.
 
-     <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS0.png" />   
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS0.PNG" />   
      
 10. Nos descargamos e instalamos DOCKER. 
 
