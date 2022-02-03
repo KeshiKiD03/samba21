@@ -43,6 +43,23 @@ docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:
 docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:139 --privileged -it keshikid03/samba21:base_vFinal /bin/bash
 ```
 
+## INDEX
+**AWS EDUCATE - PAM SAMBA LDAP**: [readme AWS DOCKER PAM SAMBA LDAP](https://github.com/KeshiKiD03/samba21#pr%C3%A1ctica-pam---ldap---samba-en-aws-educate)
+
+**SAMBA HELP KESHI**: [readme SAMBA](https://github.com/KeshiKiD03/samba21#samba-help-keshi)
+* **18.01.2022 - HOW TO SAMBA [IMPORTANTE] AARON ANDAL**: [readme](https://github.com/KeshiKiD03/samba21#18012022---how-to-samba-importante-aaron-andal)
+* **UNIX CLIENTES CON SAMBA**: [readme](https://github.com/KeshiKiD03/samba21#unix-clients-con-samba)
+* **SMBCLIENT**: [readme](https://github.com/KeshiKiD03/samba21#smbclient)
+* **SMBTREE**: [readme](https://github.com/KeshiKiD03/samba21#smbtree)
+* **SMBGET**: [readme](https://github.com/KeshiKiD03/samba21#smbget)
+* **MOUNT.CIFS**: [readme](https://github.com/KeshiKiD03/samba21#mountcifs)
+* **USERS GROUPS / SECURITY OPTIONS**: [readme](https://github.com/KeshiKiD03/samba21#users--groups-share-options-security)
+* **SHARE LEVEL SECURITY OPTIONS**: [readme](https://github.com/KeshiKiD03/samba21#share-level-access-options)
+* **EJEMPLOS DE VALIDACIÓN DE USUARIOS**: [readme](https://github.com/KeshiKiD03/samba21#ejemplos-de-validaci%C3%B3n-de-usuarios)
+* **ROLES SAMBA**: [readme](https://github.com/KeshiKiD03/samba21#roles-del-servidor-samba)
+* **REPASO ÓRDENES CLIENTE**: [readme](https://github.com/KeshiKiD03/samba21#repaso-de-%C3%B3rdenes-cliente)
+* **ARQUITECTURA Y EJEMPLOS CON PAM Y LDAP**: [readme](https://github.com/KeshiKiD03/samba21#arquitectura)
+* **PRÁCTICA SAMBA + PAM + LDAP (EN LOCAL)**: [readme](https://github.com/KeshiKiD03/samba21#pr%C3%A1ctica-samba--ldap--pam)
 
 #### NECESARI (ARQUITECTURA) (LDAP + PAM + SAMBA):
 
