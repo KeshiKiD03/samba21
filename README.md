@@ -3172,7 +3172,7 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 		
 		* Verificamos que funciona
 		
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS1.png" /> 
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS1.PNG" /> 
 
 	13.2 Probamos que funcione desde el PAM:Ldap desde AWS (Modo Interactive):
 	
@@ -3182,7 +3182,7 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 		
 		* realizamos un ldapsearch -x -LLL
 		
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS2.png" /> 
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS2.PNG" /> 
 		
 		* modificamos el /etc/security/pam_mount.conf.xml *NOT YET AFTER SAMBA*
 	
@@ -3198,20 +3198,20 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 		
 		* Hacemos un ldapsearch -x -LLL
 		
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS4.png" />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS4.PNG" />
 
 
 		* Volvemos al PAM:ldap y modificamos el pam_mount.conf.xml --> Tiene que apuntar a la IP de SAMBA (AWS).
 		
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS5.png" />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS5.PNG" />
 
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS6.png"  />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS6.PNG"  />
 
 14. Comprobamos de forma LOCAL EN AWS.
 
 	14.1. SMB.EDT.ORG --> su -l pere
 	
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS7.png"  />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS7.PNG"  />
 
 	* Observamos que correctamente:
 	
@@ -3221,13 +3221,13 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 		
 		3. Podemos probar de CREAR con el USUARIO PERE y vemos.
 		
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS8.png"  />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS8.PNG"  />
 
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS9.png"  />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS9.PNG"  />
 		
 		4. Podemos probar de hacer un SMBCLIENT -U pere%pere -L smb.edt.org / smbclient -N -L smb.edt.org para ver los recursos y shares.
 		
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS10.png"  />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS10.PNG"  />
 
 ### VEMOS QUE FUNCIONA
 
@@ -3239,16 +3239,16 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 	
 	* Modificamos el /etc/hosts para que apunte a las máquinas de AWS
 	
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS11.png"  />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS11.PNG"  />
 
 	* Probamos de hacer un ldapsearch -x -LLL
 	
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS12.png"  />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS12.PNG"  />
 
 	
 	* Volvemos al PAM:ldap y modificamos el pam_mount.conf.xml --> Tiene que apuntar a la IP PÚBLICA de SAMBA (AWS).
 		
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS13.png" />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS13.PNG" />
 
 	* Probamos de conectarnos con su -l pere y su -l marta
 	
@@ -3257,6 +3257,6 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 
 ### Definitivamente funciona correctamente.
 
-<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS14.png" />
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS14.PNG" />
 
 ------------------------------------------------------------------------
