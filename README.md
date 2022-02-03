@@ -3233,7 +3233,30 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 
 14. En LOCAL abrimos una máquina PAM y las conectamos.
 
-	* 
+	* docker run --rm --name pam.edt.org -h pam.edt.org --net 2hisx  --privileged -it keshikid03/pam21:ldap /bin/bash
+	
+	* bash startup
+	
+	* Modificamos el /etc/hosts para que apunte a las máquinas de AWS
+	
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS11.png"  />
 
+	* Probamos de hacer un ldapsearch -x -LLL
+	
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS12.png"  />
+
+	
+	* Volvemos al PAM:ldap y modificamos el pam_mount.conf.xml --> Tiene que apuntar a la IP PÚBLICA de SAMBA (AWS).
+		
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS13.png" />
+
+	* Probamos de conectarnos con su -l pere y su -l marta
+	
 15. Probamos que funcione.
+
+
+### Definitivamente funciona correctamente.
+
+<img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS14.png" />
+
 ------------------------------------------------------------------------
