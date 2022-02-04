@@ -3280,6 +3280,11 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 	
 ### PRUEBAS y CORREGIR
 	
+* /etc/hosts (local)
+```
+52.91.228.34	pam.edt.org ldap.edt.org smb.edt.org
+```
+	
 * getent passwd --> Verificamos que está el usaurio LDAP
 ```
 unix01:x:1000:1000::/home/unix01:/bin/bash
@@ -3301,6 +3306,19 @@ user07:*:7007:611:user07:/tmp/home/2asix/user07:
 user08:*:7008:611:user08:/tmp/home/2asix/user08:
 user09:*:7009:611:user09:/tmp/home/2asix/user09:
 user10:*:7010:611:user10:/tmp/home/2asix/user10:
+	
+```
+	
+* pam_mount.conf.xml (Local)
+
+```
+    <volume 
+       user="*"     
+       fstype="cifs" 
+       server="smb.edt.org" 
+       path="%(USER)" 
+       mountpoint="~/%(USER)"
+    />
 	
 ```
 	
