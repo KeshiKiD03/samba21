@@ -3207,7 +3207,7 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 	
 	13.3 Probamos que funcione el SAMBA desde AWS (Modo interactive).
 	
-		* sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:139 --privileged -d keshikid03/samba21:base_vFinal bash
+		* sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p 139:139 --privileged -d keshikid03/samba21:base_vFinal
 		
 		* Modificamos un mom para que sea interactivo, el startup.sh y le quitamos el -F
 		
