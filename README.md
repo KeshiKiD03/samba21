@@ -3327,5 +3327,40 @@ user10:*:7010:611:user10:/tmp/home/2asix/user10:
 ```
 //smb.edt.org/pere on /tmp/home/pere/pere type cifs (rw,relatime,vers=3.1.1,cache=strict,username=pere,uid=5001,forceuid,gid=100,forcegid,addr=52.91.228.34,file_mode=0755,dir_mode=0755,soft,nounix,serverino,mapposix,rsize=4194304,wsize=4194304,bsize=1048576,echo_interval=60,actimeo=1)
 ```
+	
+* smbclient -U pere%pere -L smb.edt.org
+```
+$ smbclient -U pere%pere -L smb.edt.org
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	print$          Disk      Printer Drivers
+	public          Disk      Public resource
+	doc             Disk      Documentation
+	man             Disk      Man pages
+	IPC$            IPC       IPC Service (Samba 4.13.13-Debian)
+	pere            Disk      Home Directories
+SMB1 disabled -- no workgroup available
+$ 
+
+```
+	
+* smbclient -U pere%pere //smb.edt.org
+	
+```
+$ smbclient -U pere%pere //smb.edt.org/pere
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                   D        0  Fri Feb  4 10:44:04 2022
+  ..                                  D        0  Fri Feb  4 10:21:55 2022
+  feb4-22-Aaron                       D        0  Fri Feb  4 10:28:37 2022
+  .bash_logout                        H      220  Wed Aug  4 20:25:59 2021
+  .bashrc                             H     3526  Wed Aug  4 20:25:59 2021
+  .profile                            H      807  Wed Aug  4 20:25:59 2021
+  prova.txt                           N        0  Fri Feb  4 10:44:04 2022
+
+		8062380 blocks of size 1024. 5070088 blocks available
+	
+```
 
 ------------------------------------------------------------------------
