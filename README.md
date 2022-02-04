@@ -3277,5 +3277,37 @@ sudo docker run --rm --name smb.edt.org -h smb.edt.org --net 2hisx -p 445:445 -p
 ### Definitivamente funciona correctamente.
 
 <img src="https://github.com/KeshiKiD03/samba21/blob/master/Photos/AWS14.PNG" />
+	
+### PRUEBAS y CORREGIR
+	
+* getent passwd --> Verificamos que está el usaurio LDAP
+```
+unix01:x:1000:1000::/home/unix01:/bin/bash
+unix02:x:1001:1001::/home/unix02:/bin/bash
+unix03:x:1002:1002::/home/unix03:/bin/bash
+pau:*:5000:100:Pau Pou:/tmp/home/pau:
+pere:*:5001:100:Pere Pou:/tmp/home/pere:
+anna:*:5002:600:Anna Pou:/tmp/home/anna:
+marta:*:5003:600:Marta Mas:/tmp/home/marta:
+jordi:*:5004:100:Jordi Mas:/tmp/home/jordi:
+admin:*:10:10:Administrador Sistema:/tmp/home/admin:
+user01:*:7001:610:user01:/tmp/home/1asix/user01:
+user02:*:7002:610:user02:/tmp/home/1asix/user02:
+user02:*:7003:610:user03:/tmp/home/1asix/user03:
+user04:*:7004:610:user04:/tmp/home/1asix/user04:
+user05:*:7005:610:user05:/tmp/home/1asix/user05:
+user06:*:7006:611:user06:/tmp/home/2asix/user06:
+user07:*:7007:611:user07:/tmp/home/2asix/user07:
+user08:*:7008:611:user08:/tmp/home/2asix/user08:
+user09:*:7009:611:user09:/tmp/home/2asix/user09:
+user10:*:7010:611:user10:/tmp/home/2asix/user10:
+	
+```
+	
+* mount --> Verificamos el mount donde apunta
+	
+```
+//smb.edt.org/pere on /tmp/home/pere/pere type cifs (rw,relatime,vers=3.1.1,cache=strict,username=pere,uid=5001,forceuid,gid=100,forcegid,addr=52.91.228.34,file_mode=0755,dir_mode=0755,soft,nounix,serverino,mapposix,rsize=4194304,wsize=4194304,bsize=1048576,echo_interval=60,actimeo=1)
+```
 
 ------------------------------------------------------------------------
