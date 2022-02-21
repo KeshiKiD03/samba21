@@ -1,0 +1,187 @@
+******************************************************************************
+  M01-ISO Sistemes Operatius
+  UF3: Implantació de programari específic
+******************************************************************************
+  A05-14-Serveis de xarxa
+  Exercici 30: Serveis de xarxa
+        - serveis clàssics: http, ftp, tftp
+        - NFS
+        - SAMBA
+        - Nautilus (navegador gràfic) per accedir a recursos
+  
+******************************************************************************
+------------------------------------------------------------------------------
+Servei http
+------------------------------------------------------------------------------
+01) Instal·lar el servei de pàgines web http:
+    a) Instal·lar el servei.
+    b) Omplir amb contingut el servei (populate).
+    c) Comprovar-ne el funcionament: local, remot
+
+02) Identificar els components i la configuració del servei:
+    a) Paquet, info del paquet i components del paquet.
+    b) Fitxer executable, fitxers de configuració, documentació i 
+       directoris significatius.
+    c) Fitxers de: pid, lock.
+    d) fitxers i configuració de log.
+    e) Configuració del servei: service, chkconfig.
+
+03) Monitorització del servei i tràfic de xarxa:
+    a) Identificar el port del servei.
+    b) Anàlisi dels ports oberts.
+    c) Monitoritzar tràfic http amb una eina de xarxa:
+        wireshsrk, iptraf, ss, netstat
+    
+04) Navegar pels continguts http:
+    a) Usar elinks per observar contingut http en mode text.
+    b) Usar wget per descarregar contingut web.
+
+
+------------------------------------------------------------------------------
+Servei ftp
+------------------------------------------------------------------------------
+05) Instal·lar el servei very secure ftp daemon:
+    a) Instal·lar el servei.
+    b) Omplir amb contingut el servei (populate).
+    c) Comprovar-ne el funcionament: local, remot
+
+06) Identificar els components i la configuració del servei:
+    a) Paquet, info del paquet i components del paquet.
+    b) Fitxer executable, fitxers de configuració, documentació i 
+       directoris significatius.
+    c) Fitxers de: pid, lock.
+    d) fitxers i configuració de log.
+    e) Configuració del servei: service, chkconfig.
+
+07) Monitorització del servei i tràfic de xarxa:
+    a) Identificar el port del servei.
+    b) Anàlisi dels ports oberts.
+    c) Monitoritzar tràfic ftp amb una eina de xarxa:
+        wireshsrk, iptraf, ss, netstat
+    
+08) Navegar pels continguts ftp:
+    a) User el client ftp per:
+        * descarregar un fitxer, un conjunts de fitxers.
+        * descarregar un fitxer desant-lo en una ubicació diferent i 
+          amb un nom diferent.
+        * descarregar un conjunt de fitxers a una ubicació destí concreta.
+    b) Usar wget per descarregar contingut ftp.
+
+
+------------------------------------------------------------------------------
+Servei tftp
+------------------------------------------------------------------------------
+09) Instal·lar el servei tftp:
+    a) Instal·lar el servei.
+    b) Omplir amb contingut el servei (populate).
+    c) Comprovar-ne el funcionament: local, remot
+
+10) Identificar els components i la configuració del servei:
+    a) Paquet, info del paquet i components del paquet.
+    b) Fitxer executable, fitxers de configuració, documentació i 
+       directoris significatius.
+    c) Fitxers de: pid, lock.
+    d) fitxers i configuració de log.
+    e) Configuració del servei: service, chkconfig.
+
+11) Monitorització del servei i tràfic de xarxa:
+    a) Identificar el port del servei.
+    b) Anàlisi dels ports oberts.
+    c) Monitoritzar tràfic ftp amb una eina de xarxa:
+        wireshsrk, iptraf, ss, netstat
+    
+12) Navegar pels continguts tftp:
+    a) User el client tftp per:
+        * descarregar un fitxer
+        * pujar un fitxer al servidor.
+    b) Usar wget per descarregar contingut tftp.
+
+
+------------------------------------------------------------------------------
+Servei NFS
+------------------------------------------------------------------------------
+13) Instal·lar el servei NFS:
+    a) Instal·lar el servei.
+    b) Omplir amb contingut el servei (populate).
+    c) Comprovar-ne el funcionament: local, remot
+
+14) Identificar els components i la configuració del servei:
+    a) Paquet, info del paquet i components del paquet.
+    b) Fitxer executable, fitxers de configuració, documentació i 
+       directoris significatius.
+    c) Fitxers de: pid, lock.
+    d) fitxers i configuració de log.
+    e) Configuració del servei: service, chkconfig.
+
+15) Monitorització del servei i tràfic de xarxa:
+    a) Identificar el port del servei.
+    b) Anàlisi dels ports oberts.
+    c) Monitoritzar tràfic NFS amb una eina de xarxa:
+        wireshsrk, iptraf, ss, netstat
+
+16) Exemples d'exportacions:
+    Exportar /tmp/m01/public a tota la xarxa d'informàtica.
+    Exportar /tmp/m01/readonly a tot el món però només de lectura.
+    Exportar /tmp/m01/neighbor només al pc veí en mode read/write.
+    Exportar /tmp/m01/friends només als pcs de la meteixa fila.
+
+------------------------------------------------------------------------------
+Servei SAMBA Server
+------------------------------------------------------------------------------
+17) Instal·lar el servei SAMBA:
+    a) Instal·lar el servei.
+    b) Omplir amb contingut el servei (populate).
+    c) Comprovar-ne el funcionament: local, remot
+
+18) Identificar els components i la configuració del servei:
+    a) Paquet, info del paquet i components del paquet.
+    b) Fitxer executable, fitxers de configuració, documentació i 
+       directoris significatius.
+    c) Fitxers de: pid, lock.
+    d) fitxers i configuració de log.
+    e) Configuració del servei: service, chkconfig.
+
+19) Monitorització del servei i tràfic de xarxa:
+    a) Identificar el port del servei.
+    b) Anàlisi dels ports oberts.
+    c) Monitoritzar tràfic SAMBA amb una eina de xarxa:
+        wireshsrk, iptraf, ss, netstat
+
+20) Exemples d'exportacions de samba servidor:
+    Exportar /tmp/m01/public amb tota la xarxa d'informàtica.
+    Exportar /tmp/m01/readonly amb tot el món però només de lectura.
+    Exportar /tmp/m01/neighbor només amb el pc veí en mode read/write.
+    Exportar /tmp/m01/friends només als pcs de la meteixa fila.
+    Exportar una de les impressores locals a tothom.
+    Exportar una de les impressores locals a un sol host remot.
+
+------------------------------------------------------------------------------
+Client SAMBA 
+------------------------------------------------------------------------------
+21) Instal·lar el software de SAMBA client.
+    Identificar els components i la seva configuració:
+    a) Paquet, info del paquet i components del paquet.
+    b) Fitxers executables, fitxers de configuració, documentació i 
+       directoris significatius.
+
+22) Llistar les utilitats samba client i indicar què fa cada una d'elles.
+
+
+23) exemples de les utilitats:
+    a) Llistar els serveis oferts en un domini concret.
+    b) Llistar els serveis oferts en un host concret
+    c) Connectar a un recurs de xarxa compartir: una carpeta de disc.
+    d) Connectar a un recurs de xarxa compartir: una impressora.
+    e) Descarregar un fitxer usant l'utilitat equivalent a wget.
+    f) muntar un recurs de xarxa compartit amb mount o amb l'utilitat 
+       equivalent per a samba.
+
+
+------------------------------------------------------------------------------
+Client gràfic Nautilus: per accedir a recursos de xarxa
+------------------------------------------------------------------------------
+24) Usar el nautilus per:
+    - connectar via ftp
+    - connectar via smb
+    - connectar via ssh
+    

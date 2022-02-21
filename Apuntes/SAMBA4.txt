@@ -1,0 +1,56 @@
+http://www.youtube.com/watch?v=P4g6NZRBjjw
+
+
+http://www.golinuxhub.com/2012/08/samba-4-as-active-directory.html
+http://fraterneo.blogspot.com.es/2013/06/como-unir-clientes-ubuntu-un-dominio.html
+
+
+
+
+
+
+
+
+http://www.jadota.com/2013/01/installing-samba4-on-ubuntu-12-04/
+http://fraterneo.blogspot.com.es/2013/08/guia-samba4-como-controlador-de-dominio.html
+http://linuxprience.blogspot.com.es/2013/10/controlador-de-dominio-con-samba-4.html
+
+
+http://antocarmona.blogspot.com.es/2013/07/servidor-de-dominio-en-ubuntu-server.html
+http://fraterneo.blogspot.com.es/2012/12/como-configurar-un-controlador-de.html
+http://fraterneo.blogspot.com.es/2013/06/guia-controlador-de-dominio-y.html
+http://fraterneo.blogspot.com.es/2013/07/tip-samba4-resetear-contrasena-de.html
+
+----------------
+http://waytoit.wordpress.com/2013/05/12/samba-4-controlador-active-directory-parte-1-de-3/
+http://www.jadota.com/2013/01/installing-samba4-on-ubuntu-12-04/
+https://wiki.samba.org/index.php/Samba4/HOWTO
+-------------
+
+1º Instalar dependencias.
+apt-get install build-essential libacl1-dev libattr1-dev libblkid-dev libgnutls-dev libreadline-dev python-dev python-dnspython gdb pkg-config libpopt-dev libldap2-dev dnsutils libbsd-dev attr krb5-user docbook-xsl libcups2-dev acl git
+
+-----------
+sudo apt-get install git build-essential libacl1-dev libattr1-dev libblkid-dev libgnutls-dev libreadline-dev python-dev python-dnspython gdb pkg-config libpopt-dev libldap2-dev dnsutils libbsd-dev attr krb5-user docbook-xsl libcups2-dev libpam0g-dev ntp -y
+
+
+----------
+
+2º # git clone git://git.samba.org/samba.git /usr/src/samba4/
+3º # sudo ./configure –enable-debug --> Verificar antes de compilar
+4º make --> Compilar
+5 make install --> instalar
+6º # export PATH="$PATH:/usr/local/samba/sbin:/usr/local/samba/bin"
+7º /usr/local/samba/bin/samba-tool domain provision --real=shgaming.dom --domain=SHGAMING --adminpass="SHGAMINGserver123" --server-role=dc --dns-backend=SAMBA_INTERNAL
+
+---
+1ºAlternativo
+
+/usr/share/samba/setup/provision --realm=shgaming.com --domain=SHGAMING --adminpass='ShockAdmin1' --server-role=dc --use-ntvfs
+
+--
+
+/usr/local/samba/bin/samba-tool domain provision --realm=shgaming.com --domain=SHGAMING --adminpass='ShockAdmin1' --server-role=dc
+
+http://www.youtube.com/watch?v=Rf7Hk8qWt1Q
+

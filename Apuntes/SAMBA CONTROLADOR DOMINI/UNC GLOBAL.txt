@@ -1,0 +1,76 @@
+[global]
+	domain logons = yes
+	domain master = Yes
+	netbios name = fluffygerbil
+	os level = 255
+	preferred master = yes
+	security = user
+	wins support = yes
+	workgroup = fluffygroup
+
+
+
+
+------------------------------------
+
+[global]
+	workgroup = SHOCKWARE GAMING S.A.
+	netbios name =  shockware-gaming.com
+	server string = ShockWare Gaming S.A.
+	passdb backend = tdbsam
+	printing = cups
+	printcap name = cups
+	printcap cache time = 750
+	cups options = raw
+	map to guest = Bad User
+	include = /etc/samba/dhcp.conf
+	logon path = \\%L\profiles\.msprofile
+	logon home = \\%L\%U\.9xprofile
+	logon drive = P:
+	usershare allow guests = Yes
+
+-----------------------------------------
+
+[global]
+	passdb backend = tdbsam
+	os level = 33
+	preferred master = auto
+	domain master = yes
+	local master = yes
+	security = user
+	domain logons = yes
+	logon path = \\%N\profiles\%U
+	logon drive = H:
+	logon home = \\homeserver\%U\winprofile
+	logon script = logon.cmd
+[netlogon]
+	path = /var/lib/samba/netlogon
+	read only = yes
+[profiles]
+	path = /var/lib/samba/profiles
+	read only = no
+	create mask = 0600
+	directory mask = 0700
+
+----------------------------------------
+
+PROVEN S.A.
+
+[global]
+	workgroup = PROVEN S.A.
+	netbios name = PROVEN S.A.
+	map to guest = Bad User
+	printcap name = cups
+	add machine script = /usr/sbin/useradd  -c Machine -d /var/lib/nobody -s /bin/false %m$
+	logon path = \\%L\profiles\.msprofile
+	logon drive = P:
+	logon home = \\%L\%U\.9xprofile
+	domain logons = Yes
+	os level = 65
+	preferred master = Yes
+	domain master = Yes
+	wins support = Yes
+	idmap config * : backend = tdb
+	cups options = raw
+
+

@@ -1,0 +1,75 @@
+# ----------------------- Network-Related Options -------------------------
+        workgroup = MYGROUP
+        server string = Standalone Samba Server Version %v Share Examples
+        netbios name = Maxiserver
+        netbios aliases = Superserver Shareserver Standalone
+        hosts allow = 127. 192.168. 172.17.
+        hosts deny = 12.12.12.12
+#----------------------------- Name Resolution -------------------------------
+        wins support = yes
+        wins server = yes
+#============================ Share Definitions ==============================
+[test]
+    path = /var/lib/samba/test
+    comment = Test Drive
+    volume = test-drive
+    writable = yes
+    public = yes
+    guest ok = yes
+[test01]
+    path = /var/lib/samba/test
+    comment = Test Drive ro
+    volume = test-drive-ro
+    writable = no
+    read only = yes
+    guest ok = no
+[test02]
+    path = /var/lib/samba/test
+    comment = Test Drive rw
+    volume = test-drive-rw
+    writable = yes
+    read only = no
+    valid users = anna pere
+    admin users = marta
+[testrw03]
+    path = /var/lib/samba/testrw
+    comment = Test rw drive rw
+    volume = testrw-drive-list-rw
+    writable = yes
+    write list = anna pere guest
+[testrw04]
+    path = /var/lib/samba/testrw
+    comment = Test rw drive rw
+    volume = testrw-drive-rw-list-ro
+    writable = yes
+    read list = pere guest
+[testrw05]
+    path = /var/lib/samba/testrw
+    comment = Test rw drive rw
+    volume = testrw-drive-ro-list-rw
+    read only = yes 
+    write  list = pere marta guest
+[testro06]
+    path = /var/lib/samba/testro
+    comment = Test ro drive r
+    volume = testro-drive
+    read only = yes 
+    invalid users = pere 
+    max connections = 2
+    guest ok = yes
+[testro07]
+    path = /var/lib/samba/testro
+    comment = Test ro drive r
+    volume = testro-drive-ftp
+    read only = yes
+    guest ok = yes
+    guest account = ftp
+[testro08]
+    path = /var/lib/samba/testro
+    comment = Test ro drive r
+    volume = testro-drive-ftp-only
+    read only = yes
+    guest ok = yes
+    guest account = ftp
+    guest only = yes
+

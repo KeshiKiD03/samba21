@@ -1,0 +1,54 @@
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sync:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:99:99:Nobody:/:/sbin/nologin
+avahi-autoipd:x:170:170:Avahi IPv4LL Stack:/var/lib/avahi-autoipd:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:999:999:User for polkitd:/:/sbin/nologin
+abrt:x:173:173::/etc/abrt:/sbin/nologin
+usbmuxd:x:113:113:usbmuxd user:/:/sbin/nologin
+colord:x:998:998:User for colord:/var/lib/colord:/sbin/nologin
+geoclue:x:997:997:User for geoclue:/var/lib/geoclue:/sbin/nologin
+rpc:x:32:32:Rpcbind Daemon:/var/lib/rpcbind:/sbin/nologin
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+nfsnobody:x:65534:65534:Anonymous NFS User:/var/lib/nfs:/sbin/nologin
+qemu:x:107:107:qemu user:/:/sbin/nologin
+rtkit:x:172:172:RealtimeKit:/proc:/sbin/nologin
+radvd:x:75:75:radvd user:/:/sbin/nologin
+tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin
+unbound:x:996:994:Unbound DNS resolver:/etc/unbound:/sbin/nologin
+openvpn:x:995:993:OpenVPN:/etc/openvpn:/sbin/nologin
+saslauth:x:994:76:"Saslauthd user":/run/saslauthd:/sbin/nologin
+avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin
+pulse:x:993:991:PulseAudio System Daemon:/var/run/pulse:/sbin/nologin
+gdm:x:42:42::/var/lib/gdm:/sbin/nologin
+gnome-initial-setup:x:992:989::/run/gnome-initial-setup/:/sbin/nologin
+nm-openconnect:x:991:988:NetworkManager user for OpenConnect:/:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+chrony:x:990:987::/var/lib/chrony:/sbin/nologin
+tcpdump:x:72:72::/:/sbin/nologin
+guest:x:1000:1000:guest:/home/guest:/bin/bash
+ldap:x:55:55:OpenLDAP server:/var/lib/ldap:/sbin/nologin
+postgres:x:26:26:PostgreSQL Server:/var/lib/pgsql:/bin/bash
+dhcpd:x:177:177:DHCP server:/:/sbin/nologin
+nscd:x:28:28:NSCD Daemon:/:/sbin/nologin
+nslcd:x:65:55:LDAP Client User:/:/sbin/nologin
+ramon:x:5005:5005:aa,aa,aa,aa:/var/tmp/home_local/ramon:/bin/bash
+pere:x:5006:5006::/var/tmp/pere:/bin/bash
+marta:x:5007:5007::/var/tmp/marta:/bin/bash
+julia:x:5008:5008::/var/tmp/julia:/bin/bash
+nacho:x:5009:5009::/var/tmp/home_local/nacho/:/bin/bash
+guillem:x:5010:5010::/var/tmp/home_local/guillem:/bin/bash
+ricardo:x:5011:5011::/var/tmp/home_local/ricardo:/bin/bash
+marc:x:5012:5012::/var/tmp/home_local/marc:/bin/bash
+ricardo$:x:5013:100:Workstation (ricardo$):/var/tmp/home_local:/bin/false
+named:x:25:25:Named:/var/named:/sbin/nologin

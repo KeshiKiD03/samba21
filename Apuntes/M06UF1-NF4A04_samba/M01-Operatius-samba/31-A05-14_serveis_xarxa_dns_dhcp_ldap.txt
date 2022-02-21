@@ -1,0 +1,55 @@
+******************************************************************************
+  M01-ISO Sistemes Operatius
+  UF3: Implantació de programari específic
+******************************************************************************
+  A05-14-Serveis de xarxa
+  Exercici 30: Serveis de xarxa: dns, dhcp i ldap
+        - client dns
+        - client dhcp
+        - client ldap
+  
+******************************************************************************
+------------------------------------------------------------------------------
+Client dns
+------------------------------------------------------------------------------
+01) Identificar els components i la configuració del client dns:
+    a) Fitxers de configuració.
+    b) Logs de funcionament.
+    
+02) Monitorització del servei i tràfic de xarxa d'una consulta dns:
+    a) Identificar el port del servei.
+    b) Anàlisi dels ports oberts.
+    c) Monitoritzar tràfic dns amb una eina de xarxa:
+        wireshsrk, iptraf, ss, netstat
+    
+------------------------------------------------------------------------------
+Client dhcp
+------------------------------------------------------------------------------
+03) Identificar els components i la configuració del client dhcp:
+    a) Paquet, info del paquet i components del paquet.
+    b) Fitxers executables, fitxers de configuració, documentació i 
+       directoris significatius.
+    c) Configuració de la xarxa per al dhcp.
+    d) Fitxers de leasses.
+
+04) Monitorització del servei i tràfic de xarxa:
+    a) Identificar el port del servei.
+    b) Anàlisi dels ports oberts.
+    c) Monitoritzar tràfic dhcp amb una eina de xarxa:
+        wireshsrk, iptraf, ss, netstat    
+
+------------------------------------------------------------------------------
+Client LDAP
+------------------------------------------------------------------------------
+05) Identificar els components i la configuració del client LDAP:
+    a) Paquet, info del paquet i components del paquet.
+    b) Fitxer executable, fitxers de configuració, documentació i 
+       directoris significatius.
+    c) fitxers i configuració de log.
+    d) Configuració del client ldap.
+    
+06) Monitorització del servei i tràfic de xarxa:
+    a) Identificar el port del servei.
+    b) Anàlisi dels ports oberts.
+    c) Monitoritzar tràfic ldap amb una eina de xarxa:
+        wireshsrk, iptraf, ss, netstat

@@ -1,0 +1,17 @@
+# .bashrc
+
+# User specific aliases and functions
+
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# Mes aliases
+alias documentation='cat /opt/docker/README.md'
+alias manual='cat /opt/docker/Docker-help.md'
+alias startup='/bin/bash /usr/sbin/startup.sh'

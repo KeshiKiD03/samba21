@@ -1,0 +1,2 @@
+http://www.guia-ubuntu.com/index.php?title=Samba
+http://www.alcancelibre.org/staticpages/index.php/como-samba-basico

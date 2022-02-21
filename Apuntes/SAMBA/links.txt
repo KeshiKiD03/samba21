@@ -1,0 +1,3 @@
+http://www.samba.org/samba/docs/man/Samba-HOWTO-Collection/samba-pdc.html
+http://www.oregontechsupport.com/samba/
+http://acacha.org/mediawiki/index.php/Samba_com_a_PDC

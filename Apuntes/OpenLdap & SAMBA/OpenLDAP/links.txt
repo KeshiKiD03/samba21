@@ -1,0 +1,2 @@
+https://help.ubuntu.com/community/LDAPClientAuthentication
+http://acacha.org/mediawiki/index.php/Ldap#Instal.C2.B7laci.C3.B3_Ubuntu_12.04
